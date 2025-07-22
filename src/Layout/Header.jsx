@@ -9,6 +9,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "./Logo";
 import Button from "../elements/Button";
 import { NavLink } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 function NavList() {
   return (

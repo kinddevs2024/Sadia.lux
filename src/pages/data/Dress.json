@@ -1,0 +1,1260 @@
+[
+    {
+        "id": 2044634412783,
+        "name": "Футболки",
+        "img": "https://alm-basket-cdn-01.geobasket.ru/vol4580/part458008/458008845/images/big/1.webp?1751979716841",
+        "URL": "https://www.wildberries.ru/catalog/453962511/detail.aspx?targetUrl=GP",
+        "prise": "520 200 сум",
+        "info": "MARCOVA Футбола белый",
+        "sizes": [
+            {
+                "size": "XL",
+                "number": 1
+            },
+            {
+                "size": "M",
+                "number": 1
+            },
+            {
+                "size": "S",
+                "number": 0
+            },
+            {
+                "size": "L",
+                "number": 5
+            },
+            {
+                "size": "XXL",
+                "number": 0
+            }
+        ]
+    },
+    {
+        "id": 2044643504455,
+        "name": "Футболки",
+        "img": "https://alm-basket-cdn-02.geobasket.ru/vol4543/part454301/454301299/images/big/1.webp?1751979716841",
+        "URL": "https://www.wildberries.ru/catalog/454301299/detail.aspx?targetUrl=GP",
+        "prise": "520 200 сум",
+        "info": "MARCOVA Футбола желтый",
+        "sizes": [
+            {
+                "size": "XXL",
+                "number": 1
+            },
+            {
+                "size": "L",
+                "number": 1
+            },
+            {
+                "size": "M",
+                "number": 1
+            },
+            {
+                "size": "S",
+                "number": 1
+            },
+            {
+                "size": "XL",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044655856993,
+        "name": "Футболки",
+        "img": "https://alm-basket-cdn-03.geobasket.ru/vol4552/part455272/455272280/images/big/1.webp?1751979951555",
+        "URL": "https://www.wildberries.ru/catalog/455272280/detail.aspx?targetUrl=GP",
+        "prise": "520 200 сум",
+        "info": "MARCOVA Футбола темно сини",
+        "sizes": [
+            {
+                "size": "S",
+                "number": 1
+            },
+            {
+                "size": "XL",
+                "number": 1
+            },
+            {
+                "size": "L",
+                "number": 3
+            },
+            {
+                "size": "M",
+                "number": 0
+            },
+            {
+                "size": "XXL",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2043416542540,
+        "name": "Мокасины",
+        "img": "",
+        "info": "кроссовки",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "41",
+                "number": 1
+            },
+            {
+                "size": "40",
+                "number": 0
+            },
+            {
+                "size": "43",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044709728863,
+        "name": "Лонгсливы",
+        "img": "",
+        "info": "Лонгслив",
+        "sizes": [
+            {
+                "size": "XXL",
+                "number": 1
+            },
+            {
+                "size": "XL",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044702453946,
+        "name": "Лонгсливы",
+        "img": "",
+        "info": "лонгслива-поло Paul & Shark",
+        "sizes": [
+            {
+                "size": "L",
+                "number": 1
+            },
+            {
+                "size": "XL",
+                "number": 1
+            },
+            {
+                "size": "XXL",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044702306600,
+        "name": "Лонгсливы",
+        "img": "",
+        "info": "лонгслив-поло Paul & Shark",
+        "sizes": [
+            {
+                "size": "XL",
+                "number": 1
+            },
+            {
+                "size": "3XL",
+                "number": 1
+            },
+            {
+                "size": "L",
+                "number": 1
+            },
+            {
+                "size": "XXL",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044326565476,
+        "name": "Мокасины",
+        "img": "",
+        "info": "максима LeafStep",
+        "sizes": [
+            {
+                "size": "41",
+                "number": 0
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "45",
+                "number": 1
+            },
+            {
+                "size": "40",
+                "number": 0
+            },
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "43",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044327868217,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима NAVION",
+        "sizes": [
+            {
+                "size": "43",
+                "number": 2
+            },
+            {
+                "size": "45",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "41",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044590310758,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима NAVION",
+        "sizes": [
+            {
+                "size": "45",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "43",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2044590508421,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима NAVION",
+        "sizes": [
+            {
+                "size": "45",
+                "number": 1
+            },
+            {
+                "size": "43",
+                "number": 2
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "44",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2044343024307,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима TAMER TANCA",
+        "sizes": [
+            {
+                "size": "45",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "41",
+                "number": 1
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "43",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2044590094863,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима TAMER TANCA",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "45",
+                "number": 1
+            },
+            {
+                "size": "43",
+                "number": 2
+            },
+            {
+                "size": "42",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2044313562884,
+        "name": "Мокасины",
+        "img": "",
+        "info": "обув кроссовки",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 0
+            },
+            {
+                "size": "43",
+                "number": 1
+            },
+            {
+                "size": "41",
+                "number": 1
+            },
+            {
+                "size": "40",
+                "number": 0
+            },
+            {
+                "size": "42",
+                "number": 0
+            }
+        ]
+    },
+    {
+        "id": 2043416448248,
+        "name": "Мокасины",
+        "img": "",
+        "info": "обув кроссовки",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "43",
+                "number": 0
+            },
+            {
+                "size": "40",
+                "number": 1
+            },
+            {
+                "size": "41",
+                "number": 2
+            },
+            {
+                "size": "42",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2044313295850,
+        "name": "Мокасины",
+        "img": "",
+        "info": "обув кроссовки",
+        "sizes": [
+            {
+                "size": "40",
+                "number": 1
+            },
+            {
+                "size": "41",
+                "number": 1
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "43",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "45",
+                "number": 0
+            }
+        ]
+    },
+    {
+        "id": 2042569710301,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "52",
+                "number": 3
+            },
+            {
+                "size": "54",
+                "number": 3
+            },
+            {
+                "size": "48",
+                "number": 3
+            },
+            {
+                "size": "50",
+                "number": 3
+            },
+            {
+                "size": "46",
+                "number": 3
+            },
+            {
+                "size": "44",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2042614900107,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 0
+            },
+            {
+                "size": "50",
+                "number": 1
+            },
+            {
+                "size": "52",
+                "number": 4
+            },
+            {
+                "size": "46",
+                "number": 1
+            },
+            {
+                "size": "48",
+                "number": 1
+            },
+            {
+                "size": "54",
+                "number": 4
+            }
+        ]
+    },
+    {
+        "id": 2042798199090,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 10
+            },
+            {
+                "size": "46",
+                "number": 10
+            },
+            {
+                "size": "48",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            }
+        ]
+    },
+    {
+        "id": 2043008783597,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "48",
+                "number": 2
+            },
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "46",
+                "number": 2
+            },
+            {
+                "size": "50",
+                "number": 2
+            },
+            {
+                "size": "52",
+                "number": 2
+            },
+            {
+                "size": "54",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2042569670834,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "54",
+                "number": 7
+            },
+            {
+                "size": "48",
+                "number": 2
+            },
+            {
+                "size": "50",
+                "number": 5
+            },
+            {
+                "size": "46",
+                "number": 2
+            },
+            {
+                "size": "44",
+                "number": 17
+            },
+            {
+                "size": "52",
+                "number": 3
+            }
+        ]
+    },
+    {
+        "id": 2041471930500,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "52",
+                "number": 2
+            },
+            {
+                "size": "48",
+                "number": 0
+            },
+            {
+                "size": "56",
+                "number": 2
+            },
+            {
+                "size": "58",
+                "number": 4
+            },
+            {
+                "size": "50",
+                "number": 0
+            },
+            {
+                "size": "54",
+                "number": 5
+            }
+        ]
+    },
+    {
+        "id": 2042455048150,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "58",
+                "number": 2
+            },
+            {
+                "size": "48",
+                "number": 15
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "56",
+                "number": 2
+            },
+            {
+                "size": "54",
+                "number": 3
+            }
+        ]
+    },
+    {
+        "id": 2041471930234,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "50",
+                "number": 1
+            },
+            {
+                "size": "52",
+                "number": 2
+            },
+            {
+                "size": "54",
+                "number": 2
+            },
+            {
+                "size": "48",
+                "number": 2
+            },
+            {
+                "size": "46",
+                "number": 2
+            },
+            {
+                "size": "44",
+                "number": 5
+            }
+        ]
+    },
+    {
+        "id": 2041471929870,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "46",
+                "number": 3
+            },
+            {
+                "size": "54",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 6
+            },
+            {
+                "size": "48",
+                "number": 1
+            },
+            {
+                "size": "50",
+                "number": 0
+            },
+            {
+                "size": "52",
+                "number": 0
+            }
+        ]
+    },
+    {
+        "id": 2040323649607,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "46",
+                "number": 3
+            },
+            {
+                "size": "48",
+                "number": 3
+            },
+            {
+                "size": "50",
+                "number": 3
+            },
+            {
+                "size": "52",
+                "number": 4
+            },
+            {
+                "size": "54",
+                "number": 4
+            }
+        ]
+    },
+    {
+        "id": 2040323919632,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "46",
+                "number": 10
+            },
+            {
+                "size": "48",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            },
+            {
+                "size": "44",
+                "number": 10
+            }
+        ]
+    },
+    {
+        "id": 2040755561232,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            },
+            {
+                "size": "56",
+                "number": 0
+            },
+            {
+                "size": "58",
+                "number": 0
+            },
+            {
+                "size": "48",
+                "number": 9
+            }
+        ]
+    },
+    {
+        "id": 2041471929849,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "56",
+                "number": 10
+            },
+            {
+                "size": "58",
+                "number": 10
+            },
+            {
+                "size": "48",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 9
+            }
+        ]
+    },
+    {
+        "id": 2041471929931,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "46",
+                "number": 0
+            },
+            {
+                "size": "48",
+                "number": 0
+            },
+            {
+                "size": "50",
+                "number": 0
+            },
+            {
+                "size": "52",
+                "number": 5
+            },
+            {
+                "size": "54",
+                "number": 4
+            },
+            {
+                "size": "44",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2041471930159,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "56",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "58",
+                "number": 10
+            },
+            {
+                "size": "48",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            }
+        ]
+    },
+    {
+        "id": 2041471930357,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "46",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            },
+            {
+                "size": "44",
+                "number": 9
+            },
+            {
+                "size": "48",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 10
+            }
+        ]
+    },
+    {
+        "id": 2042455129828,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "56",
+                "number": 0
+            },
+            {
+                "size": "58",
+                "number": 0
+            }
+        ]
+    },
+    {
+        "id": 2042457042477,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "48",
+                "number": 5
+            },
+            {
+                "size": "50",
+                "number": 5
+            },
+            {
+                "size": "52",
+                "number": 5
+            },
+            {
+                "size": "54",
+                "number": 5
+            },
+            {
+                "size": "44",
+                "number": 5
+            },
+            {
+                "size": "46",
+                "number": 5
+            }
+        ]
+    },
+    {
+        "id": 2042457049360,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "46",
+                "number": 1
+            },
+            {
+                "size": "48",
+                "number": 1
+            },
+            {
+                "size": "50",
+                "number": 1
+            },
+            {
+                "size": "52",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "54",
+                "number": 1
+            }
+        ]
+    },
+    {
+        "id": 2042535672640,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "54",
+                "number": 10
+            },
+            {
+                "size": "46",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "44",
+                "number": 10
+            },
+            {
+                "size": "48",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 10
+            }
+        ]
+    },
+    {
+        "id": 2042569286196,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "48",
+                "number": 5
+            },
+            {
+                "size": "50",
+                "number": 5
+            },
+            {
+                "size": "54",
+                "number": 5
+            },
+            {
+                "size": "46",
+                "number": 5
+            },
+            {
+                "size": "44",
+                "number": 5
+            },
+            {
+                "size": "52",
+                "number": 5
+            }
+        ]
+    },
+    {
+        "id": 2042569610861,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "46",
+                "number": 5
+            },
+            {
+                "size": "48",
+                "number": 5
+            },
+            {
+                "size": "50",
+                "number": 5
+            },
+            {
+                "size": "54",
+                "number": 5
+            },
+            {
+                "size": "44",
+                "number": 4
+            },
+            {
+                "size": "52",
+                "number": 5
+            }
+        ]
+    },
+    {
+        "id": 2040681777738,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "48",
+                "number": 9
+            },
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "56",
+                "number": 10
+            },
+            {
+                "size": "58",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 9
+            },
+            {
+                "size": "54",
+                "number": 9
+            }
+        ]
+    },
+    {
+        "id": 2040755156872,
+        "name": "Халаты домашние",
+        "img": "",
+        "info": "одежда халаты",
+        "sizes": [
+            {
+                "size": "44",
+                "number": 10
+            },
+            {
+                "size": "50",
+                "number": 10
+            },
+            {
+                "size": "52",
+                "number": 10
+            },
+            {
+                "size": "54",
+                "number": 10
+            },
+            {
+                "size": "56",
+                "number": 0
+            },
+            {
+                "size": "58",
+                "number": 0
+            },
+            {
+                "size": "46",
+                "number": 10
+            },
+            {
+                "size": "48",
+                "number": 10
+            }
+        ]
+    },
+    {
+        "id": 2044342939980,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима TAMER TANCA",
+        "sizes": [
+            {
+                "size": "45",
+                "number": 2
+            },
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "43",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2044342898734,
+        "name": "Мокасины",
+        "img": "",
+        "info": "Максима TAMER TANCA",
+        "sizes": [
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "43",
+                "number": 2
+            },
+            {
+                "size": "44",
+                "number": 2
+            },
+            {
+                "size": "45",
+                "number": 2
+            }
+        ]
+    },
+    {
+        "id": 2044326588265,
+        "name": "Мокасины",
+        "img": "",
+        "info": "максима LeafStep",
+        "sizes": [
+            {
+                "size": "41",
+                "number": 0
+            },
+            {
+                "size": "42",
+                "number": 2
+            },
+            {
+                "size": "40",
+                "number": 0
+            },
+            {
+                "size": "43",
+                "number": 1
+            },
+            {
+                "size": "44",
+                "number": 1
+            },
+            {
+                "size": "45",
+                "number": 1
+            }
+        ]
+    }
+]

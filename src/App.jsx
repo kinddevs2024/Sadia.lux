@@ -11,6 +11,7 @@ import Admin from "./pages/Admin/Admin";
 import Dress from "./pages/Dress/Dress";
 import Shit from "./pages/Shit/Shit";
 import Aksusars from "./pages/Aksusars/Aksusars";
+import Card from "./elements/Card";
 
 function App() {
   Aos.init();
@@ -27,6 +28,7 @@ function App() {
           <Route path="/Aksisuarlar" element={<Aksusars />} />
           <Route path="/Yupkalar" element={<Shit />} />
           <Route path="/Aboutus" element={<Aboute />} />
+          <Route path="/card/:id" element={<Card />} />
           <Route path="*" element={<Eror />} />
         </Routes>
       </Loyaout>

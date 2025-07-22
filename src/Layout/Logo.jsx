@@ -11,7 +11,7 @@ const Logo = () => {
       >
         <img
           className="max-w-28"
-          src={isHovered ? "src/imgs/pinkSadia.png" : "src/imgs/darkSadia.png"}
+          src={isHovered ? "public/pinkSadia.png" : "public/darkSadia.png"}
           alt="Sadia.lux"
         />
       </div>
