@@ -1,6 +1,7 @@
 import { Typography , } from "@material-tailwind/react";
 import React from 'react'
 import { NavLink } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
  
 const LINKS = [
@@ -24,6 +25,7 @@ export function Footer() {
   return (
     <footer className=" mt-5 relative dark:text-white w-full">
       <div className="mx-auto w-full max-w-7xl px-8">
+      <ThemeToggle />
         <div className="grid grid-cols-1 justify-between gap-4 md:grid-cols-2"></div>
         <div className="mt-12 flex w-full flex-col items-center justify-center border-t border-blue-gray-50 py-4 md:flex-row md:justify-between">
           <Typography

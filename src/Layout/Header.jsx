@@ -7,9 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Logo from "./Logo";
-import Button from "../elements/Button";
 import { NavLink } from "react-router-dom";
-import ThemeToggle from "./ThemeToggle";
 
 function NavList() {
   return (
@@ -22,7 +20,7 @@ function NavList() {
       >
         <NavLink
           to={"koylaklar"}
-          className="flex items-center hover:text-sadia_light duration-200 transition-colors"
+          className="flex  hover:text-sadia_dark duration-200 transition-colors dark:text-white"
         >
           Ko'ylaklar
         </NavLink>
@@ -35,7 +33,7 @@ function NavList() {
       >
         <NavLink
           to={"Yupkalar"}
-          className="flex items-center hover:text-sadia_light duration-200 transition-colors"
+          className="flex   hover:text-sadia_dark duration-200 transition-colors dark:text-white"
         >
           Yupkalar
         </NavLink>
@@ -48,7 +46,7 @@ function NavList() {
       >
         <NavLink
           to={"Aksisuarlar"}
-          className="flex items-center hover:text-sadia_light duration-200 transition-colors"
+          className="flex items-center  hover:text-sadia_dark transition-colors dark:text-white"
         >
           Aksisuarlar
         </NavLink>
@@ -61,7 +59,7 @@ function NavList() {
       >
         <NavLink
           to={"Aboutus"}
-          className="flex items-center hover:text-sadia_light duration-200 transition-colors"
+          className="flex items-center  hover:text-sadia_dark transition-colors dark:text-white"
         >
           Biz Haqimizda
         </NavLink>
@@ -85,86 +83,38 @@ export function Header() {
   }, []);
 
   return (
-    <Navbar className="mx-auto mt-1 max-w-screen-xl px-6 py-3">
-      <div className="flex items-center justify-between text-blue-gray-900">
-        <Typography
-          as="a"
-          href="/"
-          variant="h6"
-          className="mr-4 cursor-pointer py-1.5"
-        >
-          <Logo />
-        </Typography>
-        <div className="hidden lg:block">
-          <NavList />
-        </div>
-        <IconButton
-          variant="text"
-          className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-          ripple={false}
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-          ) : (
-            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-          )}
-        </IconButton>
-      </div>
-      <Collapse open={openNav}>
-        <NavList />
-          <div className="relative  group flex flex-row gap-1 ">
-            <a href="https://www.instagram.com/sadia.lux?igsh=bGhuZWM2ZjZ0djZ4">
-              <button
-                className="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-sm rounded-lg border border-white hover:opacity-75 focus:ring focus:ring-white/50 active:opacity-[0.85] flex w-full items-center gap-2 px-2 py-2 text-gray-600 hover:border hover:border-blue-gray-50 hover:text-primary"
-                type="button"
-              >
-                <img
-                  width="48"
-                  height="48"
-                  src="https://img.icons8.com/fluency/48/instagram-new.png"
-                  alt="instagram-new"
-                />
-                <span className="mr-2 hidden font-bold group-hover:block">
-                  Instagram
-                </span>
-              </button>
-            </a>
-            <a href="https://t.me/sadialux">
-              <button
-                className="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-sm rounded-lg border border-white hover:opacity-75 focus:ring focus:ring-white/50 active:opacity-[0.85] flex w-full items-center gap-2 px-2 py-2 text-gray-600 hover:border hover:border-blue-gray-50 hover:text-primary"
-                type="button"
-              >
-                <img
-                  width="48"
-                  height="48"
-                  src="https://img.icons8.com/fluency/48/telegram-app.png"
-                  alt="telegram-app"
-                />
-                <span className="mr-2 hidden font-bold group-hover:block">
-                  Telegram
-                </span>
-              </button>
-            </a>
-            <a href="https://www.youtube.com/channel/UCZRjN6YnT07xdxDWvX07M6Q/">
-              <button
-                className="align-middle select-none font-sans font-bold text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-sm rounded-lg border border-white hover:opacity-75 focus:ring focus:ring-white/50 active:opacity-[0.85] flex w-full items-center gap-2 px-2 py-2 text-gray-600 hover:border hover:border-blue-gray-50 hover:text-primary"
-                type="button"
-              >
-                <img
-                  width="48"
-                  height="48"
-                  src="https://img.icons8.com/color/48/youtube-play.png"
-                  alt="youtube-play"
-                />
-                <span className="mr-2 hidden font-bold group-hover:block">
-                  Youtube
-                </span>
-              </button>
-            </a>
+    <div className="fixed top-1 left-0 w-full z-50 flex justify-center bg-transparent">
+      <Navbar className=" border-white/40 mx-auto mt-1 max-w-screen-xl w-full bg-white/20 px-6 py-3 ">
+        <div className="flex items-center justify-between text-blue-gray-900">
+          <Typography
+            as="a"
+            href="/"
+            variant="h6"
+            className="mr-4 cursor-pointer py-1.5"
+          >
+            <Logo />
+          </Typography>
+          <div className="hidden lg:block">
+            <NavList />
           </div>
-      </Collapse>
-    </Navbar>
+          <IconButton
+            variant="text"
+            className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+            ripple={false}
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+            ) : (
+              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+            )}
+          </IconButton>
+        </div>
+        <Collapse open={openNav}>
+          <NavList />
+        </Collapse>
+      </Navbar>
+    </div>
   );
 }
 

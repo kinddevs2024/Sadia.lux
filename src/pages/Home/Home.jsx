@@ -1,10 +1,38 @@
+import { useEffect, useState } from "react";
+
 const Home = () => {
+  const [videoSrc, setVideoSrc] = useState("");
+
+  useEffect(() => {
+    const checkScreen = () => {
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        setVideoSrc("/0823(1).mp4");
+      } else {
+        setVideoSrc("/Sadia.mp4");
+      }
+    };
+
+    // Run on mount
+    checkScreen();
+
+    window.addEventListener("resize", checkScreen);
+    window.addEventListener("orientationchange", checkScreen);
+
+    return () => {
+      window.removeEventListener("resize", checkScreen);
+      window.removeEventListener("orientationchange", checkScreen);
+    };
+  }, []);
+
+  if (!videoSrc) return null; // Prevent rendering before src is set
+
   return (
-    <div className=" container mx-auto p-4 gap-6 flex-wrap flex justify-center items-center flex-col">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-.
-      </div>
-    </div>
+    <>
+      <video className="h-full md:w-full" autoPlay muted loop>
+        <source src={videoSrc} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </>
   );
 };
 
