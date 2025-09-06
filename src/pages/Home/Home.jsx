@@ -5,7 +5,7 @@ const Home = () => {
 
   useEffect(() => {
     const checkScreen = () => {
-      if (window.matchMedia("(min-width: 1024px)").matches) {
+      if (window.matchMedia("(max-width: 600px)").matches) {
         setVideoSrc("/0823(1).mp4");
       } else {
         setVideoSrc("/Sadia.mp4");
