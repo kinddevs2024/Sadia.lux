@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-
+import Dress from "../Dress/Dress";
+import Hero from "./Hero";
 const Home = () => {
   const [videoSrc, setVideoSrc] = useState("");
 
   useEffect(() => {
     const checkScreen = () => {
-      if (window.matchMedia("(max-width: 600px)").matches) {
-        setVideoSrc("/0823(1).mp4");
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        setVideoSrc("/Sadiabg.gif");
       } else {
-        setVideoSrc("/Sadia.mp4");
+        setVideoSrc("/Sadiat.gif");
       }
     };
 
-    // Run on mount
     checkScreen();
-
     window.addEventListener("resize", checkScreen);
     window.addEventListener("orientationchange", checkScreen);
 
@@ -24,14 +23,23 @@ const Home = () => {
     };
   }, []);
 
-  if (!videoSrc) return null; // Prevent rendering before src is set
+  if (!videoSrc) return null;
 
   return (
     <>
-      <video className="h-full md:w-full" autoPlay muted loop>
-        <source src={videoSrc} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      <div className="mb-[1000px] w-screen">
+        <img
+          src={videoSrc}
+          alt="background"
+          className="w-screen h-auto z-1000 mix-blend-lighten fixed"
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="  flex justify-center ">
+          <Hero />
+        </div>
+        <Dress />
+      </div>
     </>
   );
 };
