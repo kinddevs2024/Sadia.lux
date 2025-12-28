@@ -1,37 +1,18 @@
-import {} from "react";
-import { Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
 import "./App.css";
-import Loyaout from "./Layout/Loyaout";
-import Home from "./pages/Home/Home";
-import Aboute from "./pages/About/Aboute";
-import { useState, useEffect } from "react";
-import Eror from "./pages/Eror-404/Eror";
 import Aos from "aos";
-import Admin from "./pages/Admin/Admin";
-import Dress from "./pages/Dress/Dress";
-import Shit from "./pages/Shit/Shit";
-import Aksusars from "./pages/Aksusars/Aksusars";
-import Card from "./elements/Card";
+import AppRoutes from "./router";
+import ScrollToTop from "./components/shared/ScrollToTop";
 
 function App() {
-  Aos.init();
-  const [theme, setTheme] = useState(() => {
-    const initialTheme = localStorage.getItem("theme");
-    return initialTheme ? initialTheme : "light";
-  });
+  useEffect(() => {
+    Aos.init();
+  }, []);
+
   return (
     <>
-      <Loyaout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/koylaklar" element={<Dress />} />
-          <Route path="/Aksisuarlar" element={<Aksusars />} />
-          <Route path="/Yupkalar" element={<Shit />} />
-          <Route path="/Aboutus" element={<Aboute />} />
-          <Route path="/card/:id" element={<Card />} />
-          <Route path="*" element={<Eror />} />
-        </Routes>
-      </Loyaout>
+      <ScrollToTop />
+      <AppRoutes />
     </>
   );
 }

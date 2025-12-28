@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Dress from "../Dress/Dress";
 import Hero from "./Hero";
+import CustomizerButton from "./Button2";
 const Home = () => {
   const [videoSrc, setVideoSrc] = useState("");
 
@@ -27,7 +28,8 @@ const Home = () => {
 
   return (
     <>
-      <div className="mb-[1000px] w-screen">
+      <div className="mb-[80%] w-screen">
+      <div className=""></div>
         <img
           src={videoSrc}
           alt="background"
@@ -35,6 +37,7 @@ const Home = () => {
           loading="lazy"
           decoding="async"
         />
+
         <div className="  flex justify-center ">
           <Hero />
         </div>

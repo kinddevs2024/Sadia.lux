@@ -1,0 +1,284 @@
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { productService } from '../../services/product.service';
+import { useCart } from '../../context/CartContext';
+import SizeSelector from '../../components/public/SizeSelector';
+import ProductCard from '../../components/public/ProductCard';
+import Toast from '../../components/shared/Toast';
+
+const Product = () => {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const [selectedSize, setSelectedSize] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [showToast, setShowToast] = useState(false);
+  const [imageTransition, setImageTransition] = useState(false);
+
+  const { data: productData, isLoading } = useQuery({
+    queryKey: ['product', slug],
+    queryFn: () => productService.getProductBySlug(slug),
+  });
+
+  const product = productData?.data;
+
+  // Get related products from the same category
+  const { data: relatedProductsData } = useQuery({
+    queryKey: ['products', 'category', product?.categoryId, 'exclude', product?.id],
+    queryFn: () => productService.getProducts({ 
+      categoryId: product?.categoryId,
+      limit: 8 
+    }),
+    enabled: !!product?.categoryId,
+  });
+
+  // Filter out current product from related products
+  const relatedProducts = relatedProductsData?.data?.data?.filter(
+    (p) => p.id !== product?.id
+  ) || [];
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-lg text-gray-600 dark:text-gray-400">Загрузка...</div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Товар не найден</h2>
+          <button
+            onClick={() => navigate('/shop')}
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors"
+          >
+            Вернуться в магазин
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const images = product.images || [];
+  const inventory = product.inventory || [];
+  const sizes = inventory.map((inv) => inv.size);
+  
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    // For uploaded files, use backend URL
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+    const baseUrl = apiUrl.replace('/api', '');
+    return url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
+  };
+  
+  const currentMedia = images.length > 0 && images[selectedImageIndex] 
+    ? images[selectedImageIndex]
+    : null;
+  const mainMediaUrl = currentMedia ? getImageUrl(currentMedia.url) : '';
+  const isVideo = currentMedia?.type === 'video' || 
+    (currentMedia?.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(currentMedia.url));
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert('Пожалуйста, выберите размер');
+      return;
+    }
+
+    addToCart(product, selectedSize, quantity);
+    setShowToast(true);
+  };
+
+  const handleImageChange = (index) => {
+    setImageTransition(true);
+    setTimeout(() => {
+      setSelectedImageIndex(index);
+      setImageTransition(false);
+    }, 150);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      {showToast && (
+        <Toast
+          message="Товар добавлен в корзину!"
+          linkText="Перейти в корзину"
+          linkTo="/cart"
+          onClose={() => setShowToast(false)}
+          duration={5000}
+        />
+      )}
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Images/Video */}
+          <div>
+            <div className="aspect-square bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 relative">
+              {mainMediaUrl ? (
+                isVideo ? (
+                  <video
+                    key={`video-${selectedImageIndex}`}
+                    src={mainMediaUrl}
+                    controls
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${
+                      imageTransition ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  />
+                ) : (
+                  <img
+                    key={`image-${selectedImageIndex}`}
+                    src={mainMediaUrl}
+                    alt={product.name}
+                    className={`w-full h-full object-cover transition-opacity duration-300 ${
+                      imageTransition ? 'opacity-0' : 'opacity-100'
+                    }`}
+                  />
+                )
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-gray-400 text-sm">Нет медиа файла</span>
+                </div>
+              )}
+            </div>
+            {images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {images.map((image, index) => {
+                  const thumbUrl = getImageUrl(image.url);
+                  const thumbIsVideo = image.type === 'video' || 
+                    (image.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(image.url));
+                  
+                  return (
+                    <button
+                      key={image.id || index}
+                      onClick={() => handleImageChange(index)}
+                      className={`w-20 h-20 rounded overflow-hidden border-2 relative flex-shrink-0 transition-all duration-200 ${
+                        selectedImageIndex === index
+                          ? 'border-primary ring-2 ring-primary ring-opacity-50'
+                          : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'
+                      }`}
+                    >
+                      {thumbUrl ? (
+                        thumbIsVideo ? (
+                          <video
+                            src={thumbUrl}
+                            className="w-full h-full object-cover"
+                            muted
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={thumbUrl}
+                            alt={`${product.name} ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        )
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-400 text-xs">Нет</span>
+                        </div>
+                      )}
+                      {thumbIsVideo && (
+                        <div className="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs px-1 rounded">
+                          ▶
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              {product.name}
+            </h1>
+            {product.category?.description && (
+              <p className="text-gray-600 dark:text-gray-400 mb-4 text-lg">
+                {product.category.description}
+              </p>
+            )}
+            {product.description && (
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {product.description}
+              </p>
+            )}
+            <div className="mb-6">
+              <span className="text-4xl font-bold text-primary dark:text-primary">
+                {product.price.toFixed(2)} сум
+              </span>
+            </div>
+
+            {sizes.length > 0 ? (
+              <SizeSelector
+                sizes={sizes}
+                selectedSize={selectedSize}
+                onSizeChange={setSelectedSize}
+                inventory={inventory}
+              />
+            ) : (
+              <div className="mb-6">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Размеры недоступны. Пожалуйста, добавьте размеры в инвентарь.
+                </p>
+              </div>
+            )}
+
+            <div className="mt-6 flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+                >
+                  -
+                </button>
+                <span className="w-12 text-center font-medium text-lg">{quantity}</span>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+                >
+                  +
+                </button>
+              </div>
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
+              >
+                Добавить в корзину
+              </button>
+            </div>
+
+            {product.category && (
+              <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Категория: <span className="font-medium text-gray-900 dark:text-white">{product.category.name}</span>
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              Похожие товары
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {relatedProducts.slice(0, 4).map((relatedProduct) => (
+                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Product;
+
