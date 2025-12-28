@@ -17,21 +17,21 @@ import UserRegister from './pages/user/Register';
 import UserProfile from './pages/user/Profile';
 
 // Admin pages
-import AdminLogin from './pages/admin/Login';
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminProducts from './pages/admin/Products';
-import AdminInventory from './pages/admin/Inventory';
-import AdminOrders from './pages/admin/Orders';
-import AdminAnalytics from './pages/admin/Analytics';
-import AdminSupport from './pages/admin/Support';
-import AdminReviews from './pages/admin/Reviews';
-import AdminUsers from './pages/admin/Users';
-import AdminCoupons from './pages/admin/Coupons';
-import AdminExchanges from './pages/admin/Exchanges';
-import AdminDatabase from './pages/admin/Database';
-import AdminCategories from './pages/admin/Categories';
-import AdminProductImages from './pages/admin/ProductImages';
-import AdminNewsletter from './pages/admin/Newsletter';
+import AdminLogin from './pages/Admin/Login';
+import AdminDashboard from './pages/Admin/Dashboard';
+import AdminProducts from './pages/Admin/Products';
+import AdminInventory from './pages/Admin/Inventory';
+import AdminOrders from './pages/Admin/Orders';
+import AdminAnalytics from './pages/Admin/Analytics';
+import AdminSupport from './pages/Admin/Support';
+import AdminReviews from './pages/Admin/Reviews';
+import AdminUsers from './pages/Admin/Users';
+import AdminCoupons from './pages/Admin/Coupons';
+import AdminExchanges from './pages/Admin/Exchanges';
+import AdminDatabase from './pages/Admin/Database';
+import AdminCategories from './pages/Admin/Categories';
+import AdminProductImages from './pages/Admin/ProductImages';
+import AdminNewsletter from './pages/Admin/Newsletter';
 import AdminLayout from './components/admin/AdminLayout';
 import ProtectedRoute from './components/shared/ProtectedRoute';
 
