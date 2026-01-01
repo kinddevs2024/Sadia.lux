@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext';
 import SizeSelector from '../../components/public/SizeSelector';
 import ProductCard from '../../components/public/ProductCard';
 import Toast from '../../components/shared/Toast';
+import { Analytics } from '@vercel/analytics/react';
 
 const Product = () => {
   const { slug } = useParams();
@@ -276,6 +277,7 @@ const Product = () => {
           </div>
         )}
       </div>
+      <Analytics />
     </div>
   );
 };

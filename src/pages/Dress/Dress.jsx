@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import dressData from "../data/Dress.json";
 import { Link } from "react-router-dom";
+import { Analytics } from '@vercel/analytics/react';
 
 const Dress = () => {
   const dresses = Array.from({ length: 5 });

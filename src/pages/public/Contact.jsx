@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -155,6 +156,7 @@ const Contact = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { databaseService } from "../../services/database.service";
+import { Analytics } from '@vercel/analytics/react';
 
 const Database = () => {
   const [selectedCollection, setSelectedCollection] = useState(null);
@@ -225,6 +226,7 @@ const Database = () => {
           </div>
         </div>
       )}
+      <Analytics />
     </div>
   );
 };

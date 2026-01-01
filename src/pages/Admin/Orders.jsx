@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { orderService } from '../../services/order.service';
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const Orders = () => {
   const queryClient = useQueryClient();
@@ -277,6 +278,7 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

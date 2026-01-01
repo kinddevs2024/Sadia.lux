@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { adminService } from '../../services/admin.service';
 import { orderService } from '../../services/order.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const Dashboard = () => {
   const { data: statsData } = useQuery({
@@ -113,6 +114,7 @@ const Dashboard = () => {
           </table>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

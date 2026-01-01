@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { categoryService } from "../../services/category.service";
+import { Analytics } from '@vercel/analytics/react';
 
 const Categories = () => {
   const queryClient = useQueryClient();
@@ -251,6 +252,7 @@ const CategoryForm = ({ category, onSubmit, onClose, isLoading }) => {
           </div>
         </form>
       </div>
+      <Analytics />
     </div>
   );
 };

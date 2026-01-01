@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../services/api';
 import OrderList from '../../components/public/OrderList';
+import { Analytics } from '@vercel/analytics/react';
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -249,6 +250,7 @@ const UserProfile = () => {
           <OrderList />
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

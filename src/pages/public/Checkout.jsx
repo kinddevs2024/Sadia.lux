@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { orderService } from '../../services/order.service';
 import { couponService } from '../../services/coupon.service';
 import CompactCartItem from '../../components/public/CompactCartItem';
+import { Analytics } from '@vercel/analytics/react';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -369,6 +370,7 @@ const Checkout = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

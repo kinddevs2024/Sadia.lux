@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Analytics } from '@vercel/analytics/react';
 
 const Eror = () => {
   return (
@@ -75,6 +76,7 @@ const Eror = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </StyledWrapper>
   );
 };

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { Analytics } from '@vercel/analytics/react';
 
 const POSLogin = () => {
   const navigate = useNavigate();
@@ -79,6 +80,7 @@ const POSLogin = () => {
           </button>
         </form>
       </div>
+      <Analytics />
     </div>
   );
 };

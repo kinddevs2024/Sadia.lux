@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { couponService } from '../../services/coupon.service';
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const AdminCoupons = () => {
   const queryClient = useQueryClient();
@@ -216,6 +217,7 @@ const AdminCoupons = () => {
           </table>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

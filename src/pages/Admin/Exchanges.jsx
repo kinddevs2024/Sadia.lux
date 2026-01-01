@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { exchangeService } from '../../services/exchange.service';
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const AdminExchanges = () => {
   const queryClient = useQueryClient();
@@ -222,6 +223,7 @@ const AdminExchanges = () => {
           </div>
         </div>
       )}
+      <Analytics />
     </div>
   );
 };

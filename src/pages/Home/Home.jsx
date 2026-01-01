@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Dress from "../Dress/Dress";
 import Hero from "./Hero";
 import CustomizerButton from "./Button2";
+import { Analytics } from '@vercel/analytics/react';
 const Home = () => {
   const [videoSrc, setVideoSrc] = useState("");
 
@@ -43,6 +44,7 @@ const Home = () => {
         </div>
         <Dress />
       </div>
+      <Analytics />
     </>
   );
 };

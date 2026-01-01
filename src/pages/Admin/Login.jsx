@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { Analytics } from '@vercel/analytics/react';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ const AdminLogin = () => {
           </div>
         </form>
       </div>
+      <Analytics />
     </div>
   );
 };

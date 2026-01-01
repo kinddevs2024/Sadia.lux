@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/react';
+
 const About = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-20">
@@ -45,6 +47,7 @@ const About = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

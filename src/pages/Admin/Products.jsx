@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { productService } from '../../services/product.service';
 import { categoryService } from '../../services/category.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const Products = () => {
   const queryClient = useQueryClient();
@@ -297,6 +298,7 @@ const ProductForm = ({ product, categories, onClose }) => {
           </div>
         </form>
       </div>
+      <Analytics />
     </div>
   );
 };

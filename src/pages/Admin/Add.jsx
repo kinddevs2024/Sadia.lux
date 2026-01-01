@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Analytics } from '@vercel/analytics/react';
 
 function Main_fo_cards() {
   const [formData, setFormData] = useState({ title: "", body: "" });
@@ -53,6 +54,7 @@ function Main_fo_cards() {
           <pre>{JSON.stringify(response, null, 2)}</pre>
         </div>
       )}
+      <Analytics />
     </div>
   );
 }

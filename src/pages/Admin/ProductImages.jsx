@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { productService } from '../../services/product.service';
+import { Analytics } from '@vercel/analytics/react';
 import api from '../../services/api';
 
 const ProductImages = () => {
@@ -308,6 +309,7 @@ const ProductImages = () => {
           </div>
         )}
       </div>
+      <Analytics />
     </div>
   );
 };

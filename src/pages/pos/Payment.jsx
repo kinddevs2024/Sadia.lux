@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { orderService } from '../../services/order.service';
 import { posService } from '../../services/pos.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const POSPayment = () => {
   const { orderId } = useParams();
@@ -167,6 +168,7 @@ const POSPayment = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

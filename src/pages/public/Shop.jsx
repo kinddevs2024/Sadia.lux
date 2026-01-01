@@ -4,6 +4,7 @@ import { productService } from '../../services/product.service';
 import { categoryService } from '../../services/category.service';
 import ProductGrid from '../../components/public/ProductGrid';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Analytics } from '@vercel/analytics/react';
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -169,6 +170,7 @@ const Shop = () => {
           </div>
         )}
       </div>
+      <Analytics />
     </div>
   );
 };

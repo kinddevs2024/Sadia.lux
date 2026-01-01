@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supportService } from '../../services/support.service';
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const AdminSupport = () => {
   const queryClient = useQueryClient();
@@ -175,6 +176,7 @@ const AdminSupport = () => {
           </div>
         </div>
       )}
+      <Analytics />
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { inventoryService } from '../../services/inventory.service';
 import { productService } from '../../services/product.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const Inventory = () => {
   const queryClient = useQueryClient();
@@ -284,6 +285,7 @@ const InventoryForm = ({ item, products, onSubmit, onClose, isLoading, createMut
           </div>
         </form>
       </div>
+      <Analytics />
     </div>
   );
 };

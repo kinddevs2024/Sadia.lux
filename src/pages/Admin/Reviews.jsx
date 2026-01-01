@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { reviewService } from '../../services/review.service';
 import { useState } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 
 const AdminReviews = () => {
   const queryClient = useQueryClient();
@@ -154,6 +155,7 @@ const AdminReviews = () => {
           </table>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

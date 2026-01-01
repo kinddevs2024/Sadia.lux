@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { userService } from '../../services/user.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const AdminUsers = () => {
   const { data: usersData, isLoading } = useQuery({
@@ -85,6 +86,7 @@ const AdminUsers = () => {
           </table>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

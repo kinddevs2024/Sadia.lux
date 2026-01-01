@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../services/auth.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const UserRegister = () => {
   const navigate = useNavigate();
@@ -216,6 +217,7 @@ const UserRegister = () => {
           </div>
         </form>
       </div>
+      <Analytics />
     </div>
   );
 };

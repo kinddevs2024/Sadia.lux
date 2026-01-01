@@ -4,6 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { productService } from '../../services/product.service';
 import { categoryService } from '../../services/category.service';
 import { posService } from '../../services/pos.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const POSMain = () => {
   const navigate = useNavigate();
@@ -249,6 +250,7 @@ const POSMain = () => {
           </div>
         </div>
       </div>
+      <Analytics />
     </div>
   );
 };

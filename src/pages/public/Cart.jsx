@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { orderService } from '../../services/order.service';
 import CartItem from '../../components/public/CartItem';
 import OrderList from '../../components/public/OrderList';
+import { Analytics } from '@vercel/analytics/react';
 
 const Cart = () => {
   const { cart, getCartTotal, getCartItemCount } = useCart();
@@ -118,6 +119,7 @@ const Cart = () => {
           </div>
         </div>
       )}
+      <Analytics />
     </div>
   );
 };

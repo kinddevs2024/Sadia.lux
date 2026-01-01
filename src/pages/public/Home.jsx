@@ -5,6 +5,7 @@ import ProductCard from '../../components/public/ProductCard';
 import ReviewsSection from '../../components/public/ReviewsSection';
 import AudioPlayer from '../../components/public/AudioPlayer';
 import { ShoppingBagIcon, CheckCircleIcon, TruckIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { Analytics } from '@vercel/analytics/react';
 
 const Home = () => {
   const { data: productsData, isLoading } = useQuery({
@@ -270,6 +271,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <Analytics />
     </div>
   );
 };

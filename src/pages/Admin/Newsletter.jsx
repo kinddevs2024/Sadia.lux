@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { newsletterService } from '../../services/newsletter.service';
+import { Analytics } from '@vercel/analytics/react';
 
 const Newsletter = () => {
   const queryClient = useQueryClient();
@@ -165,6 +166,7 @@ const Newsletter = () => {
           </div>
         )}
       </div>
+      <Analytics />
     </div>
   );
 };
