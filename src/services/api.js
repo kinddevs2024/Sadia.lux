@@ -1,24 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Use production backend by default, fallback to localhost for development
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? "https://sadia-backend.vercel.app/api"
+    : "http://localhost:3000/api");
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     // Don't set Content-Type for FormData - let browser set it with boundary
     if (config.data instanceof FormData) {
-      delete config.headers['Content-Type'];
+      delete config.headers["Content-Type"];
     }
     return config;
   },
@@ -33,13 +38,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Unauthorized - clear token and redirect to login
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/admin/login';
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/admin/login";
     }
     return Promise.reject(error);
   }
 );
 
 export default api;
-
