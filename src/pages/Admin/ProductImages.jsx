@@ -240,9 +240,14 @@ const ProductImages = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {images
+              .filter((image) => image && image.url) // Filter out images without URLs
               .sort((a, b) => (a.order || 0) - (b.order || 0))
               .map((image, index) => {
                 const getMediaUrl = () => {
+                  // Handle undefined or null url
+                  if (!image.url) {
+                    return '';
+                  }
                   if (image.url.startsWith('http')) {
                     return image.url;
                   }
@@ -256,7 +261,7 @@ const ProductImages = () => {
                 
                 const mediaUrl = getMediaUrl();
                 const isVideo = image.type === 'video' || 
-                  /\.(mp4|webm|ogg|mov|m4v)$/i.test(image.url);
+                  (image.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(image.url));
 
                 return (
                   <div
