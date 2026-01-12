@@ -1,135 +1,100 @@
-import { Outlet, Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const AdminLayout = () => {
   const { user, logout, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
+  const menuItems = [
+    { to: "/admin/dashboard", label: "Дашборд" },
+    { to: "/admin/categories", label: "Категории" },
+    { to: "/admin/products", label: "Товары" },
+    { to: "/admin/inventory", label: "Склад" },
+    { to: "/admin/orders", label: "Заказы" },
+    { to: "/admin/offline-shopping", label: "Оффлайн продажи" },
+    { to: "/admin/analytics", label: "Аналитика" },
+    { to: "/admin/reviews", label: "Отзывы" },
+    { to: "/admin/support", label: "Поддержка" },
+    { to: "/admin/newsletter", label: "Рассылки" },
+    { to: "/admin/database", label: "База данных" },
+  ];
+
+  const superMenu = [
+    { to: "/admin/users", label: "Пользователи" },
+    { to: "/admin/coupons", label: "Купоны" },
+    { to: "/admin/exchanges", label: "Возвраты/обмены" },
+  ];
+
+  const linkClasses = (path) =>
+    `flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition ${
+      location.pathname === path
+        ? "bg-white text-gray-900 shadow-sm"
+        : "text-gray-200 hover:bg-white/10"
+    }`;
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white overflow-y-auto">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold">Панель администратора</h2>
-          <p className="text-sm text-gray-400 mt-1">
-            {isSuperAdmin ? 'СуперАдмин' : user?.role}
-          </p>
+      <aside className="w-64 min-w-[16rem] flex-none bg-gray-900 text-white flex flex-col border-r border-gray-800 sticky top-0 self-start h-screen">
+        <div className="px-5 py-6 border-b border-gray-800">
+          <div className="text-xl font-semibold tracking-tight">Sadia Admin</div>
+          <div className="text-xs text-gray-400 mt-1">
+            {isSuperAdmin ? "Superadmin" : user?.role}
+          </div>
         </div>
-        <nav className="mt-8">
-          <Link
-            to="/admin/dashboard"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Панель управления
-          </Link>
-          <Link
-            to="/admin/categories"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Категории
-          </Link>
-          <Link
-            to="/admin/products"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Товары
-          </Link>
-          <Link
-            to="/admin/inventory"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Склад
-          </Link>
-          <Link
-            to="/admin/orders"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Заказы
-          </Link>
-          <Link
-            to="/admin/analytics"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Аналитика
-          </Link>
-          <Link
-            to="/admin/reviews"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Отзывы
-          </Link>
-          <Link
-            to="/admin/support"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Сообщения поддержки
-          </Link>
-          <Link
-            to="/admin/newsletter"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            Рассылка новостей
-          </Link>
-          <Link
-            to="/admin/database"
-            className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-          >
-            База данных
-          </Link>
-          
-          {/* SuperAdmin only */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {menuItems.map((item) => (
+            <Link key={item.to} to={item.to} className={linkClasses(item.to)}>
+              {item.label}
+            </Link>
+          ))}
           {isSuperAdmin && (
             <>
-              <div className="mt-4 pt-4 border-t border-gray-700">
-                <p className="px-6 py-2 text-xs text-gray-400 uppercase">СуперАдмин</p>
+              <div className="mt-4 pt-4 border-t border-gray-800 text-xs uppercase text-gray-500 px-2">
+                Управление
               </div>
-              <Link
-                to="/admin/users"
-                className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-              >
-                Пользователи
-              </Link>
-              <Link
-                to="/admin/coupons"
-                className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-              >
-                Купоны
-              </Link>
-              <Link
-                to="/admin/exchanges"
-                className="block px-6 py-3 hover:bg-gray-700 transition-colors"
-              >
-                Запросы на отмену
-              </Link>
+              {superMenu.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={linkClasses(item.to)}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </>
           )}
         </nav>
-      </div>
+        <div className="px-4 py-4 border-t border-gray-800 text-sm text-gray-300">
+          <div className="mb-2">{user?.email}</div>
+          <button
+            onClick={handleLogout}
+            className="w-full px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+          >
+            Выйти
+          </button>
+        </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="ml-64">
-        {/* Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm">
+      <div className="flex-1 min-w-0 flex flex-col">
+        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="px-6 py-4 flex justify-between items-center">
-            <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Панель администратора</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-gray-600 dark:text-gray-400">{user?.email}</span>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Выход
-              </button>
+            <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Панель управления
+            </h1>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              {new Date().toLocaleDateString("ru-RU")}
             </div>
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="p-6">
           <Outlet />
         </main>
@@ -139,4 +104,3 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
-

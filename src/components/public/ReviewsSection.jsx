@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
 import { reviewService } from '../../services/review.service';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
+import ScrollReveal from '../shared/ScrollReveal';
 
 const ReviewsSection = () => {
   const queryClient = useQueryClient();
@@ -45,14 +47,16 @@ const ReviewsSection = () => {
   return (
     <section className="py-20 bg-secondary">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-light mb-4" style={{ color: 'rgb(var(--color-text-primary))' }}>
-            Отзывы наших клиентов
-          </h2>
-          <p className="text-lg text-secondary" style={{ color: 'rgb(var(--color-text-secondary))' }}>
-            Что говорят о нас наши покупательницы
-          </p>
-        </div>
+        <ScrollReveal direction="up" delay={0.2}>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-light mb-4" style={{ color: 'rgb(var(--color-text-primary))' }}>
+              Отзывы наших клиентов
+            </h2>
+            <p className="text-lg text-secondary" style={{ color: 'rgb(var(--color-text-secondary))' }}>
+              Что говорят о нас наши покупательницы
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Reviews List */}
         {isLoading ? (
@@ -61,11 +65,13 @@ const ReviewsSection = () => {
           </div>
         ) : reviews.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {reviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-              >
+            {reviews.map((review, index) => (
+              <ScrollReveal key={review.id} direction="up" delay={0.1 * index}>
+                <motion.div
+                  className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  transition={{ duration: 0.3 }}
+                >
                 <div className="flex items-center mb-4">
                   <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mr-4">
                     <span className="text-primary text-xl font-semibold">
@@ -88,7 +94,8 @@ const ReviewsSection = () => {
                 <p className="text-xs mt-4" style={{ color: 'rgb(var(--color-text-secondary))' }}>
                   {new Date(review.createdAt).toLocaleDateString('ru-RU')}
                 </p>
-              </div>
+              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
         ) : (
@@ -98,18 +105,29 @@ const ReviewsSection = () => {
         )}
 
         {/* Add Review Button */}
-        <div className="text-center">
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="bg-primary text-white px-8 py-3 rounded-full font-medium hover:bg-primary-dark transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1"
-          >
-            {showForm ? 'Отмена' : 'Оставить отзыв'}
-          </button>
-        </div>
+        <ScrollReveal direction="up" delay={0.3}>
+          <div className="text-center">
+            <motion.button
+              onClick={() => setShowForm(!showForm)}
+              className="bg-primary text-white px-8 py-3 rounded-full font-medium hover:bg-primary-dark transition-all duration-300 hover:shadow-lg"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {showForm ? 'Отмена' : 'Оставить отзыв'}
+            </motion.button>
+          </div>
+        </ScrollReveal>
 
         {/* Review Form */}
-        {showForm && (
-          <div className="mt-12 max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl">
+        <AnimatePresence>
+          {showForm && (
+            <motion.div
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="mt-12 max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-xl"
+            >
             <h3 className="text-2xl font-light mb-6 text-center" style={{ color: 'rgb(var(--color-text-primary))' }}>
               Поделитесь своим мнением
             </h3>
@@ -178,8 +196,9 @@ const ReviewsSection = () => {
                 {createReviewMutation.isPending ? 'Отправка...' : 'Отправить отзыв'}
               </button>
             </form>
-          </div>
-        )}
+          </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

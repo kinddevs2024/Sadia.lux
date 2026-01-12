@@ -1,15 +1,20 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { trackEvent } from '../utils/analytics';
 
 const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
+  const { user } = useAuth();
   const [cart, setCart] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
+
+  const storageKey = user?.id ? `cart_${user.id}` : 'cart_guest';
 
   useEffect(() => {
     // Load cart from localStorage on mount
     try {
-      const savedCart = localStorage.getItem('cart');
+      const savedCart = localStorage.getItem(storageKey);
       if (savedCart) {
         const parsedCart = JSON.parse(savedCart);
         // Validate that parsedCart is an array
@@ -17,14 +22,14 @@ export const CartProvider = ({ children }) => {
           setCart(parsedCart);
         } else {
           console.warn('Invalid cart data in localStorage, resetting cart');
-          localStorage.removeItem('cart');
+          localStorage.removeItem(storageKey);
         }
       }
     } catch (error) {
       console.error('Error loading cart from localStorage:', error);
       // Clear corrupted data
       try {
-        localStorage.removeItem('cart');
+      localStorage.removeItem(storageKey);
       } catch (e) {
         console.error('Error clearing corrupted cart data:', e);
       }
@@ -39,10 +44,10 @@ export const CartProvider = ({ children }) => {
 
     try {
       if (cart.length > 0) {
-        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem(storageKey, JSON.stringify(cart));
       } else {
         // Remove from localStorage if cart is empty to save space
-        localStorage.removeItem('cart');
+        localStorage.removeItem(storageKey);
       }
     } catch (error) {
       console.error('Error saving cart to localStorage:', error);
@@ -50,17 +55,17 @@ export const CartProvider = ({ children }) => {
       if (error.name === 'QuotaExceededError') {
         console.warn('LocalStorage quota exceeded. Clearing old cart data.');
         try {
-          localStorage.removeItem('cart');
+          localStorage.removeItem(storageKey);
           // Try saving again
           if (cart.length > 0) {
-            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem(storageKey, JSON.stringify(cart));
           }
         } catch (e) {
           console.error('Error after clearing localStorage:', e);
         }
       }
     }
-  }, [cart, isInitialized]);
+  }, [cart, isInitialized, storageKey]);
 
   const addToCart = (product, size, quantity = 1) => {
     setCart((prevCart) => {
@@ -76,7 +81,7 @@ export const CartProvider = ({ children }) => {
         );
       }
 
-      return [
+      const newCart = [
         ...prevCart,
         {
           productId: product.id,
@@ -86,6 +91,16 @@ export const CartProvider = ({ children }) => {
           price: product.price,
         },
       ];
+      return newCart;
+    });
+
+    trackEvent("add_to_cart", {
+      product_id: product.id,
+      size,
+      quantity,
+      price: product.price,
+      source: "online",
+      user_id: user?.id,
     });
   };
 

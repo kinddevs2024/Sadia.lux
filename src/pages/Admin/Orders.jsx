@@ -1,17 +1,36 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { orderService } from '../../services/order.service';
-import { useState } from 'react';
-import { Analytics } from '@vercel/analytics/react';
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { orderService } from "../../services/order.service";
+import { Analytics } from "@vercel/analytics/react";
+
+const statusOptions = [
+  { value: "PENDING", label: "Ожидает оплаты" },
+  { value: "PAID", label: "Оплачено" },
+  { value: "COMPLETED", label: "Выполнено" },
+  { value: "CANCELLED", label: "Отменено" },
+];
+
+const sourceLabels = {
+  ONLINE: "Онлайн",
+  POS: "POS",
+  OFFLINE: "Оффлайн",
+  TELEGRAM: "Telegram",
+};
+
+const paymentLabels = {
+  CASH: "Наличные",
+  TERMINAL: "Терминал",
+  TRANSFER: "Перевод",
+};
 
 const Orders = () => {
   const queryClient = useQueryClient();
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   const { data: ordersData, isLoading } = useQuery({
-    queryKey: ['admin-orders'],
+    queryKey: ["admin-orders"],
     queryFn: async () => {
       const response = await orderService.getAllOrders({ limit: 100 });
-      // Загрузить items для каждого заказа
       if (response.data) {
         const ordersWithItems = await Promise.all(
           response.data.map(async (order) => {
@@ -36,8 +55,8 @@ const Orders = () => {
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, status }) => orderService.updateOrderStatus(id, status),
     onSuccess: () => {
-      queryClient.invalidateQueries(['admin-orders']);
-      queryClient.invalidateQueries(['userOrders']);
+      queryClient.invalidateQueries(["admin-orders"]);
+      queryClient.invalidateQueries(["userOrders"]);
     },
   });
 
@@ -45,14 +64,16 @@ const Orders = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Заказы</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+        Заказы
+      </h1>
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Номер заказа
+                Номер
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Статус
@@ -61,7 +82,10 @@ const Orders = () => {
                 Источник
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Всего
+                Оплата
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Сумма
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 Дата
@@ -74,13 +98,19 @@ const Orders = () => {
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {isLoading ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                  Загрузка...
+                <td
+                  colSpan={7}
+                  className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                >
+                  Загружаем...
                 </td>
               </tr>
             ) : orders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                <td
+                  colSpan={7}
+                  className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
+                >
                   Заказы не найдены
                 </td>
               </tr>
@@ -94,45 +124,60 @@ const Orders = () => {
                     <select
                       value={order.status}
                       onChange={(e) => {
-                        if (window.confirm(`Изменить статус заказа ${order.orderNumber} на "${e.target.options[e.target.selectedIndex].text}"?`)) {
-                          updateStatusMutation.mutate({ id: order.id, status: e.target.value });
+                        if (
+                          window.confirm(
+                            `Изменить статус заказа ${order.orderNumber} на "${statusOptions.find(
+                              (s) => s.value === e.target.value
+                            )?.label}"?`
+                          )
+                        ) {
+                          updateStatusMutation.mutate({
+                            id: order.id,
+                            status: e.target.value,
+                          });
                         } else {
-                          // Reset select to original value
                           e.target.value = order.status;
                         }
                       }}
                       className={`px-3 py-1 rounded-full text-xs font-semibold border-0 focus:ring-2 focus:ring-primary cursor-pointer ${
-                        order.status === 'PAID'
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                          : order.status === 'COMPLETED'
-                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                          : order.status === 'CANCELLED'
-                          ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                        order.status === "PAID"
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                          : order.status === "COMPLETED"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : order.status === "CANCELLED"
+                          ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                       }`}
                       disabled={updateStatusMutation.isPending}
                     >
-                      <option value="PENDING">Ожидает оплаты</option>
-                      <option value="PAID">Оплачен</option>
-                      <option value="CANCELLED">Отменен</option>
-                      <option value="COMPLETED">Завершен</option>
+                      {statusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {order.source}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {Number(order.total).toFixed(2)} сум
+                    {sourceLabels[order.source] || order.source}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {new Date(order.createdAt).toLocaleDateString('ru-RU')}
+                    {paymentLabels[order.paymentMethod || order.payment_method] ||
+                      order.paymentMethod ||
+                      order.payment_method ||
+                      "—"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                    {Number(order.total).toFixed(2)} UZS
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    {new Date(order.createdAt).toLocaleDateString("ru-RU")}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => setSelectedOrder(order)}
                       className="text-primary hover:text-primary-dark dark:text-primary-light"
                     >
-                      Просмотр
+                      Подробнее
                     </button>
                   </td>
                 </tr>
@@ -159,13 +204,6 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
   const [selectedStatus, setSelectedStatus] = useState(order.status);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const statusOptions = [
-    { value: 'PENDING', label: 'Ожидает оплаты' },
-    { value: 'PAID', label: 'Оплачен' },
-    { value: 'CANCELLED', label: 'Отменен' },
-    { value: 'COMPLETED', label: 'Завершен' },
-  ];
-
   const handleStatusUpdate = async () => {
     if (selectedStatus === order.status) {
       onClose();
@@ -176,8 +214,8 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
       await onStatusUpdate(selectedStatus);
       onClose();
     } catch (error) {
-      console.error('Error updating status:', error);
-      alert('Ошибка при обновлении статуса');
+      console.error("Error updating status:", error);
+      alert("Не удалось обновить статус заказа");
     } finally {
       setIsUpdating(false);
     }
@@ -185,31 +223,90 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'PAID':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-      case 'COMPLETED':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-      case 'CANCELLED':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-      case 'PENDING':
+      case "PAID":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      case "COMPLETED":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      case "CANCELLED":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+      case "PENDING":
       default:
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-screen overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Детали заказа</h2>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-screen overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          Детали заказа
+        </h2>
         <div className="space-y-4">
-          <div>
-            <strong className="text-gray-700 dark:text-gray-300">Номер заказа:</strong>{' '}
-            <span className="text-gray-900 dark:text-white">{order.orderNumber}</span>
+          <div className="flex justify-between">
+            <div>
+              <div className="text-gray-700 dark:text-gray-300">
+                Номер:{" "}
+                <span className="text-gray-900 dark:text-white">
+                  {order.orderNumber}
+                </span>
+              </div>
+              <div className="text-gray-700 dark:text-gray-300">
+                Источник:{" "}
+                <span className="text-gray-900 dark:text-white">
+                  {sourceLabels[order.source] || order.source}
+                </span>
+              </div>
+              <div className="text-gray-700 dark:text-gray-300">
+                Оплата:{" "}
+                <span className="text-gray-900 dark:text-white">
+                  {paymentLabels[order.paymentMethod || order.payment_method] ||
+                    order.paymentMethod ||
+                    order.payment_method ||
+                    "—"}
+                </span>
+              </div>
+              {order.cashier_id && (
+                <div className="text-gray-700 dark:text-gray-300">
+                  Кассир:{" "}
+                  <span className="text-gray-900 dark:text-white">
+                    {order.cashier_id}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="text-right">
+              <div className="text-gray-700 dark:text-gray-300">
+                Создан:{" "}
+                <span className="text-gray-900 dark:text-white">
+                  {new Date(order.createdAt).toLocaleString("ru-RU", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+              </div>
+              <div className="text-gray-700 dark:text-gray-300">
+                Сумма:{" "}
+                <span className="text-gray-900 dark:text-white font-semibold">
+                  {Number(order.total).toFixed(2)} UZS
+                </span>
+              </div>
+            </div>
           </div>
-          
+
           <div>
-            <strong className="text-gray-700 dark:text-gray-300">Статус:</strong>
-            <div className="mt-2">
+            <strong className="text-gray-700 dark:text-gray-300">
+              Статус:
+            </strong>
+            <div className="mt-2 flex items-center gap-3">
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
@@ -221,41 +318,26 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
                   </option>
                 ))}
               </select>
-              <span className={`ml-3 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedStatus)}`}>
-                {statusOptions.find(opt => opt.value === selectedStatus)?.label}
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  selectedStatus
+                )}`}
+              >
+                {statusOptions.find((opt) => opt.value === selectedStatus)?.label}
               </span>
             </div>
           </div>
 
           <div>
-            <strong className="text-gray-700 dark:text-gray-300">Источник:</strong>{' '}
-            <span className="text-gray-900 dark:text-white">{order.source}</span>
-          </div>
-          
-          <div>
-            <strong className="text-gray-700 dark:text-gray-300">Всего:</strong>{' '}
-            <span className="text-gray-900 dark:text-white">{Number(order.total).toFixed(2)} сум</span>
-          </div>
-          
-          <div>
-            <strong className="text-gray-700 dark:text-gray-300">Дата:</strong>{' '}
-            <span className="text-gray-900 dark:text-white">
-              {new Date(order.createdAt).toLocaleDateString('ru-RU', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </span>
-          </div>
-
-          <div>
-            <strong className="text-gray-700 dark:text-gray-300">Товары:</strong>
+            <strong className="text-gray-700 dark:text-gray-300">
+              Позиции:
+            </strong>
             <ul className="list-disc list-inside mt-2 space-y-1">
               {order.items?.map((item, index) => (
                 <li key={index} className="text-gray-900 dark:text-white">
-                  {item.product?.name || 'Товар'} - Размер: {item.size} - Кол-во: {item.quantity} - {Number(item.price).toFixed(2)} сум
+                  {item.product?.name || item.product_name || "Товар"}{" "}
+                  {item.sku ? `(SKU: ${item.sku})` : ""} — {item.quantity} x{" "}
+                  {Number(item.price).toFixed(2)} UZS
                 </li>
               ))}
             </ul>
@@ -266,22 +348,25 @@ const OrderDetailsModal = ({ order, onClose, onStatusUpdate }) => {
               onClick={onClose}
               className="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 transition-colors"
             >
-              Отмена
+              Закрыть
             </button>
             <button
               onClick={handleStatusUpdate}
               disabled={isUpdating || selectedStatus === order.status}
               className="flex-1 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isUpdating ? 'Обновление...' : selectedStatus === order.status ? 'Статус не изменен' : 'Сохранить статус'}
+              {isUpdating
+                ? "Сохраняем..."
+                : selectedStatus === order.status
+                ? "Без изменений"
+                : "Обновить статус"}
             </button>
           </div>
         </div>
+        <Analytics />
       </div>
-      <Analytics />
     </div>
   );
 };
 
 export default Orders;
-
