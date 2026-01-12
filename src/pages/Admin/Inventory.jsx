@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { inventoryService } from "../../services/inventory.service";
 import { productService } from "../../services/product.service";
+import { categoryService } from "../../services/category.service";
 import { Analytics } from "@vercel/analytics/react";
 import QRCodeGenerator from "../../components/pos/QRCodeGenerator";
 
@@ -20,6 +21,13 @@ const Inventory = () => {
   const { data: productsData } = useQuery({
     queryKey: ["products"],
     queryFn: () => productService.getProducts({ limit: 1000 }),
+  });
+
+  // Fetch categories when form is open (especially for new records)
+  const { data: categoriesData, isLoading: categoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoryService.getCategories(),
+    enabled: showForm, // Only fetch when form is open
   });
 
   const createMutation = useMutation({
@@ -93,6 +101,8 @@ const Inventory = () => {
         <InventoryForm
           item={editingItem}
           products={products}
+          categories={categoriesData?.data || []}
+          categoriesLoading={categoriesLoading}
           onSubmit={handleSubmit}
           onClose={() => {
             setShowForm(false);
@@ -222,17 +232,46 @@ const Inventory = () => {
 const InventoryForm = ({
   item,
   products,
+  categories,
+  categoriesLoading,
   onSubmit,
   onClose,
   isLoading,
   createMutation,
   updateMutation,
 }) => {
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  
   const [formData, setFormData] = useState({
     productId: item?.productId || "",
     size: item?.size || "",
     quantity: item?.quantity || 0,
   });
+
+  // Update form data when item changes (for editing)
+  useEffect(() => {
+    if (item) {
+      setFormData({
+        productId: item.productId || "",
+        size: item.size || "",
+        quantity: item.quantity || 0,
+      });
+      setSelectedCategoryId(""); // Reset category filter when editing
+    } else {
+      // Reset form when adding new item
+      setFormData({
+        productId: "",
+        size: "",
+        quantity: 0,
+      });
+      setSelectedCategoryId("");
+    }
+  }, [item]);
+
+  // Filter products by selected category
+  const filteredProducts = selectedCategoryId
+    ? products.filter((p) => p.categoryId === selectedCategoryId)
+    : products;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -257,6 +296,31 @@ const InventoryForm = ({
         </h2>
 
         <form onSubmit={handleSubmit}>
+          {!item && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Категория (для фильтрации)
+              </label>
+              <select
+                value={selectedCategoryId}
+                onChange={(e) => setSelectedCategoryId(e.target.value)}
+                disabled={categoriesLoading}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              >
+                <option value="">Все категории</option>
+                {categoriesLoading ? (
+                  <option value="">Загрузка категорий...</option>
+                ) : (
+                  categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))
+                )}
+              </select>
+            </div>
+          )}
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Продукт *
@@ -270,7 +334,7 @@ const InventoryForm = ({
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-200 dark:disabled:bg-gray-600"
             >
               <option value="">Выберите продукт</option>
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <option key={product.id} value={product.id}>
                   {product.name}
                 </option>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { productService } from '../../services/product.service';
@@ -17,6 +17,8 @@ const Product = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [showToast, setShowToast] = useState(false);
   const [imageTransition, setImageTransition] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
 
   const { data: productData, isLoading } = useQuery({
     queryKey: ['product', slug],
@@ -102,6 +104,43 @@ const Product = () => {
     }, 150);
   };
 
+  const openImageModal = (index) => {
+    setModalImageIndex(index);
+    setShowImageModal(true);
+  };
+
+  const closeImageModal = () => {
+    setShowImageModal(false);
+  };
+
+  const nextImage = () => {
+    setModalImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setModalImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  // Keyboard navigation for image modal
+  useEffect(() => {
+    if (!showImageModal || images.length === 0) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setModalImageIndex((prev) => (prev + 1) % images.length);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setModalImageIndex((prev) => (prev - 1 + images.length) % images.length);
+      } else if (e.key === 'Escape') {
+        closeImageModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showImageModal, images.length]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       {showToast && (
@@ -117,7 +156,10 @@ const Product = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Images/Video */}
           <div>
-            <div className="aspect-square bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 relative">
+            <div 
+              className="aspect-[2/3] bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 relative cursor-pointer group"
+              onClick={() => openImageModal(selectedImageIndex)}
+            >
               {mainMediaUrl ? (
                 isVideo ? (
                   <video
@@ -129,14 +171,26 @@ const Product = () => {
                     }`}
                   />
                 ) : (
-                  <img
-                    key={`image-${selectedImageIndex}`}
-                    src={mainMediaUrl}
-                    alt={product.name}
-                    className={`w-full h-full object-cover transition-opacity duration-300 ${
-                      imageTransition ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  />
+                  <>
+                    <img
+                      key={`image-${selectedImageIndex}`}
+                      src={mainMediaUrl}
+                      alt={product.name}
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${
+                        imageTransition ? 'opacity-0' : 'opacity-100'
+                      }`}
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center">
+                      <svg 
+                        className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+                      </svg>
+                    </div>
+                  </>
                 )
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -277,6 +331,142 @@ const Product = () => {
           </div>
         )}
       </div>
+
+      {/* Image Modal for Full Screen View */}
+      {showImageModal && images.length > 0 && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center"
+          onClick={closeImageModal}
+        >
+          <div 
+            className="relative max-w-7xl w-full h-full flex items-center justify-center p-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              onClick={closeImageModal}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10 bg-black bg-opacity-50 rounded-full p-2 transition-all"
+              aria-label="Закрыть"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Previous Button */}
+            {images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 bg-black bg-opacity-50 rounded-full p-3 transition-all hover:bg-opacity-70"
+                aria-label="Предыдущее изображение"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Next Button */}
+            {images.length > 1 && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 bg-black bg-opacity-50 rounded-full p-3 transition-all hover:bg-opacity-70"
+                aria-label="Следующее изображение"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Main Image/Video */}
+            <div className="w-full h-full flex items-center justify-center">
+              {(() => {
+                const modalMedia = images[modalImageIndex];
+                const modalMediaUrl = modalMedia ? getImageUrl(modalMedia.url) : '';
+                const modalIsVideo = modalMedia?.type === 'video' || 
+                  (modalMedia?.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(modalMedia.url));
+
+                return modalMediaUrl ? (
+                  modalIsVideo ? (
+                    <video
+                      src={modalMediaUrl}
+                      controls
+                      autoPlay
+                      className="max-w-full max-h-full object-contain"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <img
+                      src={modalMediaUrl}
+                      alt={`${product.name} ${modalImageIndex + 1}`}
+                      className="max-w-full max-h-full object-contain"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  )
+                ) : null;
+              })()}
+            </div>
+
+            {/* Image Counter */}
+            {images.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 rounded-full px-4 py-2 text-sm">
+                {modalImageIndex + 1} / {images.length}
+              </div>
+            )}
+
+            {/* Thumbnail Navigation */}
+            {images.length > 1 && (
+              <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex gap-2 overflow-x-auto max-w-full px-4">
+                {images.map((image, index) => {
+                  const thumbUrl = getImageUrl(image.url);
+                  const thumbIsVideo = image.type === 'video' || 
+                    (image.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(image.url));
+                  
+                  return (
+                    <button
+                      key={image.id || index}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalImageIndex(index);
+                      }}
+                      className={`w-16 h-16 rounded overflow-hidden border-2 flex-shrink-0 transition-all ${
+                        modalImageIndex === index
+                          ? 'border-white ring-2 ring-white ring-opacity-50'
+                          : 'border-transparent hover:border-gray-400 opacity-70 hover:opacity-100'
+                      }`}
+                    >
+                      {thumbUrl ? (
+                        thumbIsVideo ? (
+                          <video
+                            src={thumbUrl}
+                            className="w-full h-full object-cover"
+                            muted
+                            playsInline
+                          />
+                        ) : (
+                          <img
+                            src={thumbUrl}
+                            alt={`${product.name} ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        )
+                      ) : null}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <Analytics />
     </div>
   );
