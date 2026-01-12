@@ -24,4 +24,14 @@ export const adminService = {
   },
 
   getAllProducts: () => api.get('/admin/products'),
+
+  getProductAnalytics: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.startDate) params.append("startDate", filters.startDate);
+    if (filters.endDate) params.append("endDate", filters.endDate);
+    if (filters.source) params.append("source", filters.source);
+
+    const response = await api.get(`/admin/analytics/products?${params.toString()}`);
+    return response.data;
+  },
 };

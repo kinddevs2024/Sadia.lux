@@ -26,6 +26,8 @@ const Product = () => {
   });
 
   const product = productData?.data;
+  const images = product?.images || [];
+  const imagesLength = images.length;
 
   // Get related products from the same category
   const { data: relatedProductsData } = useQuery({
@@ -66,7 +68,6 @@ const Product = () => {
     );
   }
 
-  const images = product.images || [];
   const inventory = product.inventory || [];
   const sizes = inventory.map((inv) => inv.size);
   
@@ -114,32 +115,34 @@ const Product = () => {
   };
 
   const nextImage = () => {
-    setModalImageIndex((prev) => (prev + 1) % images.length);
+    if (imagesLength === 0) return;
+    setModalImageIndex((prev) => (prev + 1) % imagesLength);
   };
 
   const prevImage = () => {
-    setModalImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    if (imagesLength === 0) return;
+    setModalImageIndex((prev) => (prev - 1 + imagesLength) % imagesLength);
   };
 
   // Keyboard navigation for image modal
   useEffect(() => {
-    if (!showImageModal || images.length === 0) return;
+    if (!showImageModal || imagesLength === 0) return;
 
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowRight') {
         e.preventDefault();
-        setModalImageIndex((prev) => (prev + 1) % images.length);
+        setModalImageIndex((prev) => (prev + 1) % imagesLength);
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        setModalImageIndex((prev) => (prev - 1 + images.length) % images.length);
+        setModalImageIndex((prev) => (prev - 1 + imagesLength) % imagesLength);
       } else if (e.key === 'Escape') {
-        closeImageModal();
+        setShowImageModal(false);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showImageModal, images.length]);
+  }, [showImageModal, imagesLength]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">

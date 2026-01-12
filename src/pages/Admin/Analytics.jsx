@@ -80,7 +80,7 @@ const Analytics = () => {
   const [period, setPeriod] = useState("today");
   const [source, setSource] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [tab, setTab] = useState("orders"); // orders | buyouts
+  const [tab, setTab] = useState("orders"); // orders | buyouts | products
 
   const { start, end } = getDateRange(period);
   const rangeLabel = start === end ? start : `${start} — ${end}`;
@@ -94,6 +94,18 @@ const Analytics = () => {
         source,
         paymentMethod,
       }),
+    enabled: tab !== "products",
+  });
+
+  const { data: productAnalyticsData, isLoading: productsLoading } = useQuery({
+    queryKey: ["product-analytics", period, source],
+    queryFn: () =>
+      adminService.getProductAnalytics({
+        startDate: start,
+        endDate: end,
+        source,
+      }),
+    enabled: tab === "products",
   });
 
   const payload = analyticsData?.data || {};
@@ -219,6 +231,7 @@ const Analytics = () => {
         {[
           { key: "orders", label: "Orders" },
           { key: "buyouts", label: "Completed" },
+          { key: "products", label: "Products" },
         ].map((t) => (
           <button
             key={t.key}
@@ -425,6 +438,236 @@ const Analytics = () => {
           </table>
         </div>
       </div>
+
+      {/* Products Analytics Tab */}
+      {tab === "products" && (
+        <>
+          {(() => {
+            const productData = productAnalyticsData?.data || {};
+            const products = productData.products || [];
+            const topProducts = products.slice(0, 10);
+
+            return (
+              <>
+                {/* Product Stats Cards */}
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Total Products Sold
+                      </p>
+                      <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-1">
+                        {fmt(productData.totalProducts || 0)}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Unique products
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Total Revenue
+                      </p>
+                      <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-1">
+                        {fmt(productData.totalRevenue || 0)} UZS
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        From all products
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Total Units Sold
+                      </p>
+                      <p className="text-2xl font-semibold text-gray-900 dark:text-white mt-1">
+                        {fmt(productData.totalQuantity || 0)}
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Items sold
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Top Products List */}
+                <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden">
+                  <div className="flex items-center justify-between px-6 py-3 border-b border-gray-200 dark:border-gray-700">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Top Products by Sales
+                    </h2>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      Sorted by revenue
+                    </span>
+                  </div>
+                  <div className="max-h-[600px] overflow-auto">
+                    {productsLoading ? (
+                      <div className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                        Loading product analytics...
+                      </div>
+                    ) : topProducts.length === 0 ? (
+                      <div className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                        No product sales data for this period.
+                      </div>
+                    ) : (
+                      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                        {topProducts.map((product, index) => {
+                          const maxRevenue = Math.max(...topProducts.map(p => p.totalRevenue), 1);
+                          const revenuePercentage = (product.totalRevenue / maxRevenue) * 100;
+
+                          return (
+                            <div
+                              key={product.productId}
+                              className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-semibold text-primary">
+                                    {index + 1}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                      {product.productName}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                      {fmt(product.totalQuantity)} units · {fmt(product.ordersCount)} orders
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="text-right ml-4">
+                                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {fmt(product.totalRevenue)} UZS
+                                  </p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    {product.totalQuantity > 0
+                                      ? `${fmt(Math.round(product.totalRevenue / product.totalQuantity))} UZS/unit`
+                                      : "—"}
+                                  </p>
+                                </div>
+                              </div>
+                              {/* Progress bar */}
+                              <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-primary to-primary/70 transition-all duration-300"
+                                  style={{ width: `${revenuePercentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Product Sales Charts */}
+                {topProducts.length > 0 && (
+                  <div className="space-y-4">
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      Sales Trends by Product
+                    </h2>
+                    {topProducts.slice(0, 5).map((product) => {
+                      const productSeries = product.dates.map((item, idx) => ({
+                        x: idx,
+                        y: item.quantity,
+                        y2: item.revenue,
+                        label: new Date(item.date).toLocaleDateString("ru-RU", {
+                          day: "2-digit",
+                          month: "2-digit",
+                        }),
+                      }));
+
+                      const maxQty = Math.max(...productSeries.map((p) => p.y), 1);
+                      const maxRev = Math.max(...productSeries.map((p) => p.y2), 1);
+
+                      return (
+                        <div
+                          key={product.productId}
+                          className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-5 shadow-sm"
+                        >
+                          <div className="mb-4">
+                            <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                              {product.productName}
+                            </h3>
+                            <div className="flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+                              <span>Total: {fmt(product.totalRevenue)} UZS</span>
+                              <span>Units: {fmt(product.totalQuantity)}</span>
+                            </div>
+                          </div>
+                          {productSeries.length === 0 ? (
+                            <div className="text-sm text-gray-500 dark:text-gray-400 py-8 text-center">
+                              No sales data for this period
+                            </div>
+                          ) : (
+                            <div className="overflow-x-auto pt-4">
+                              <svg
+                                width={svgWidth}
+                                height={svgHeight}
+                                className="min-w-full"
+                                aria-label="chart"
+                              >
+                                <line
+                                  x1="0"
+                                  y1={svgHeight - 20}
+                                  x2={svgWidth}
+                                  y2={svgHeight - 20}
+                                  stroke="#d9e2ec"
+                                  strokeWidth="2"
+                                />
+                                {productSeries.map((p, i) => (
+                                  <text
+                                    key={i}
+                                    x={(i / Math.max(productSeries.length - 1, 1)) * svgWidth}
+                                    y={svgHeight - 6}
+                                    fontSize="10"
+                                    textAnchor="middle"
+                                    fill="#8a94a6"
+                                  >
+                                    {p.label}
+                                  </text>
+                                ))}
+                                <path
+                                  d={linePath(
+                                    productSeries,
+                                    maxQty,
+                                    svgHeight - 40,
+                                    svgWidth
+                                  )}
+                                  fill="none"
+                                  stroke="#ec4899"
+                                  strokeWidth="2"
+                                />
+                                <path
+                                  d={linePath(
+                                    productSeries.map((p) => ({ ...p, y: p.y2 })),
+                                    maxRev,
+                                    svgHeight - 40,
+                                    svgWidth
+                                  )}
+                                  fill="none"
+                                  stroke="#14b8a6"
+                                  strokeWidth="2"
+                                  strokeDasharray="6 4"
+                                />
+                              </svg>
+                              <div className="flex gap-4 text-xs text-gray-500 mt-2">
+                                <span className="flex items-center gap-1">
+                                  <span className="w-3 h-3 rounded-full bg-pink-500"></span> Units
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <span className="w-3 h-3 rounded-full bg-teal-400"></span> Revenue
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </>
+      )}
 
       <VercelAnalytics />
     </div>
