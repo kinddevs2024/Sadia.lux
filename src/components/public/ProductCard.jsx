@@ -89,7 +89,7 @@ const ProductCard = ({ product, index = 0 }) => {
         <div className="p-5">
           <motion.h3
             className="text-lg font-medium text-gray-800 mb-2 line-clamp-2"
-            animate={{ color: isHovered ? "rgb(var(--color-primary))" : "#1f2937" }}
+            animate={{ color: isHovered ? "rgb(251, 113, 133)" : "#1f2937" }}
             transition={{ duration: 0.2 }}
           >
             {product.name}

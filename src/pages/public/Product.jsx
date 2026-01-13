@@ -44,6 +44,26 @@ const Product = () => {
     (p) => p.id !== product?.id
   ) || [];
 
+  // Keyboard navigation for image modal - MUST be called before any early returns
+  useEffect(() => {
+    if (!showImageModal || imagesLength === 0) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        setModalImageIndex((prev) => (prev + 1) % imagesLength);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        setModalImageIndex((prev) => (prev - 1 + imagesLength) % imagesLength);
+      } else if (e.key === 'Escape') {
+        setShowImageModal(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showImageModal, imagesLength]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -123,26 +143,6 @@ const Product = () => {
     if (imagesLength === 0) return;
     setModalImageIndex((prev) => (prev - 1 + imagesLength) % imagesLength);
   };
-
-  // Keyboard navigation for image modal
-  useEffect(() => {
-    if (!showImageModal || imagesLength === 0) return;
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        setModalImageIndex((prev) => (prev + 1) % imagesLength);
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        setModalImageIndex((prev) => (prev - 1 + imagesLength) % imagesLength);
-      } else if (e.key === 'Escape') {
-        setShowImageModal(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showImageModal, imagesLength]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
