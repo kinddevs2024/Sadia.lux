@@ -89,6 +89,12 @@ export const posService = {
    */
   batchRemoveProducts: (productIds, method = "deactivate") =>
     api.post("/pos/products/batch-remove", { productIds, method }),
+
+  // ===== Cashier Stats =====
+  /**
+   * Get cashier statistics (Admin/SuperAdmin only)
+   */
+  getCashierStats: (filters = {}) => api.get("/admin/cashiers/stats", { params: filters }),
 };
 
 export default posService;

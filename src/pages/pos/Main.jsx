@@ -22,10 +22,13 @@ const POSMain = () => {
   const [error, setError] = useState(null);
 
   // Fetch POS products (only active_for_pos=true and stock > 0)
-  const { data: productsData, isLoading: productsLoading } = useQuery({
+  const { data: productsData, isLoading: productsLoading, error: productsError } = useQuery({
     queryKey: ["pos-products", searchQuery],
     queryFn: () => posService.getProducts({ search: searchQuery, limit: 100 }),
-    onError: (err) => setError("Failed to load products"),
+    onError: (err) => {
+      console.error("Failed to load products:", err);
+      setError("Failed to load products");
+    },
   });
 
   const createOrderMutation = useMutation({
@@ -65,7 +68,35 @@ const POSMain = () => {
     },
   });
 
-  const products = productsData?.data?.data || [];
+  // Safely extract products array from API response
+  // API returns: { success: true, data: { data: [...], meta: {...} } }
+  // axios unwraps it to: { data: { success: true, data: [...], meta: {...} } }
+  let products = [];
+  
+  if (productsError) {
+    console.error("Products query error:", productsError);
+    products = [];
+  } else if (productsData?.data) {
+    // Check if response has nested data structure
+    if (productsData.data.data && Array.isArray(productsData.data.data)) {
+      products = productsData.data.data;
+    } 
+    // Check if data is directly an array
+    else if (Array.isArray(productsData.data)) {
+      products = productsData.data;
+    }
+    // Log for debugging if structure is unexpected
+    else if (productsData.data && !Array.isArray(productsData.data)) {
+      console.warn('Unexpected products data structure:', productsData.data);
+      products = [];
+    }
+  }
+  
+  // Ensure products is always an array
+  if (!Array.isArray(products)) {
+    console.warn('Products is not an array, defaulting to empty array. Data:', productsData);
+    products = [];
+  }
 
   const getPrice = (product) =>
     product?.offline_price != null ? product.offline_price : product.price;
@@ -226,13 +257,13 @@ const POSMain = () => {
             <div className="text-center py-12 text-gray-500">
               Loading products...
             </div>
-          ) : products.length === 0 ? (
+          ) : !Array.isArray(products) || products.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               {searchQuery ? "No products found" : "No products available"}
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4">
-              {products.map((product) => (
+              {Array.isArray(products) && products.map((product) => (
                 <div
                   key={product.id}
                   className="bg-gray-50 rounded-lg p-4 hover:shadow-lg hover:bg-gray-100 transition-all border border-gray-200 relative group"

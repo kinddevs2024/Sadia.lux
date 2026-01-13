@@ -34,4 +34,14 @@ export const adminService = {
     const response = await api.get(`/admin/analytics/products?${params.toString()}`);
     return response.data;
   },
+
+  getCashierStats: async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.dateFrom) params.append("dateFrom", filters.dateFrom);
+    if (filters.dateTo) params.append("dateTo", filters.dateTo);
+    if (filters.cashierId) params.append("cashierId", filters.cashierId);
+
+    const response = await api.get(`/admin/cashiers/stats?${params.toString()}`);
+    return response.data;
+  },
 };

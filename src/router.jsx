@@ -32,6 +32,7 @@ import AdminDatabase from "./pages/Admin/Database";
 import AdminCategories from "./pages/Admin/Categories";
 import AdminProductImages from "./pages/Admin/ProductImages";
 import AdminNewsletter from "./pages/Admin/Newsletter";
+import AdminCashiers from "./pages/Admin/Cashiers";
 import AdminLayout from "./components/admin/AdminLayout";
 import AdminOfflineShopping from "./pages/Admin/OfflineShopping";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
@@ -41,6 +42,7 @@ import POSLogin from "./pages/pos/Login";
 import POSMain from "./pages/pos/Main";
 import POSPayment from "./pages/pos/Payment";
 import POSReceipt from "./pages/pos/Receipt";
+import POSSales from "./pages/pos/Sales";
 import POSLayout from "./components/pos/POSLayout";
 
 // ProtectedRoute is now imported from components
@@ -96,6 +98,7 @@ const AppRoutes = () => {
         <Route path="products/:id/images" element={<AdminProductImages />} />
         <Route path="inventory" element={<AdminInventory />} />
         <Route path="orders" element={<AdminOrders />} />
+        <Route path="cashiers" element={<AdminCashiers />} />
         <Route path="analytics" element={<AdminAnalytics />} />
         <Route path="reviews" element={<AdminReviews />} />
         <Route path="support" element={<AdminSupport />} />
@@ -118,6 +121,7 @@ const AppRoutes = () => {
         }
       >
         <Route index element={<POSMain />} />
+        <Route path="sales" element={<POSSales />} />
         <Route path="payment/:orderId" element={<POSPayment />} />
         <Route path="receipt/:orderId" element={<POSReceipt />} />
       </Route>

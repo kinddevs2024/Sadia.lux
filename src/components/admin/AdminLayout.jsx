@@ -18,6 +18,7 @@ const AdminLayout = () => {
     { to: "/admin/inventory", label: "Склад" },
     { to: "/admin/orders", label: "Заказы" },
     { to: "/admin/offline-shopping", label: "Оффлайн продажи" },
+    { to: "/admin/cashiers", label: "Кассиры" },
     { to: "/admin/analytics", label: "Аналитика" },
     { to: "/admin/reviews", label: "Отзывы" },
     { to: "/admin/support", label: "Поддержка" },
