@@ -11,6 +11,8 @@ const Products = () => {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const { data: productsData, isLoading } = useQuery({
     queryKey: ["admin-products"],
@@ -32,6 +34,12 @@ const Products = () => {
   const products = productsData?.data?.data || [];
   const categories = categoriesData?.data || [];
 
+  // Pagination logic
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = products.slice(startIndex, endIndex);
+
   const handleDelete = (id) => {
     if (
       window.confirm(
@@ -44,8 +52,8 @@ const Products = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 lg:mb-8">
+        <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
           Товары
         </h1>
         <button
@@ -53,7 +61,7 @@ const Products = () => {
             setEditingProduct(null);
             setShowForm(true);
           }}
-          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
+          className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark w-full sm:w-auto"
         >
           Добавить товар
         </button>
@@ -70,139 +78,210 @@ const Products = () => {
         />
       )}
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Название
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Категория
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Онлайн цена
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Оффлайн цена
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                POS активен
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Себестоимость
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Прибыль
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Действия
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {isLoading ? (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
-                >
-                  Загружаем...
-                </td>
-              </tr>
-            ) : products.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="px-6 py-4 text-center text-gray-500 dark:text-gray-400"
-                >
-                  Товары не найдены
-                </td>
-              </tr>
-            ) : (
-              products.map((product, index) => (
-                <tr key={`${product.id}-${index}`}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                    {product.name}
-                    {product.sku ? (
-                      <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
-                        SKU: {product.sku}
-                      </span>
-                    ) : null}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {product.category?.name || "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {product.price ? Number(product.price).toFixed(2) : "0.00"} UZS
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {product.offline_price != null
-                      ? `${Number(product.offline_price).toFixed(2)} UZS`
-                      : "—"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        product.active_for_pos
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                          : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        {/* Mobile: Scrollable container */}
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <div className="inline-block min-w-full align-middle">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Название
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Категория
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Онлайн цена
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Оффлайн цена
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    POS активен
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Себестоимость
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Прибыль
+                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Действия
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {isLoading ? (
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className="px-6 py-4 text-center text-gray-500"
+                    >
+                      Загружаем...
+                    </td>
+                  </tr>
+                ) : products.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className="px-6 py-4 text-center text-gray-500"
+                    >
+                      Товары не найдены
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedProducts.map((product, index) => (
+                    <tr key={`${product.id}-${index}`}>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {product.name}
+                        {product.sku ? (
+                          <span className="ml-2 text-xs text-gray-500">
+                            SKU: {product.sku}
+                          </span>
+                        ) : null}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {product.category?.name || "-"}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {product.price ? Number(product.price).toFixed(2) : "0.00"} UZS
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {product.offline_price != null
+                          ? `${Number(product.offline_price).toFixed(2)} UZS`
+                          : "—"}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            product.active_for_pos
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                              : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                          }`}
+                        >
+                          {product.active_for_pos ? "Включен" : "Выкл"}
+                        </span>
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {product.costPrice
+                          ? `${Number(product.costPrice).toFixed(2)} UZS`
+                          : "-"}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                        {product.profit !== undefined && product.profit !== null
+                          ? `${Number(product.profit).toFixed(2)} UZS`
+                          : product.costPrice && product.price
+                          ? `${(
+                              Number(product.price) - Number(product.costPrice)
+                            ).toFixed(2)} UZS`
+                          : "-"}
+                      </td>
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingProduct(product);
+                              setShowForm(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-xs sm:text-sm"
+                          >
+                            Редакт.
+                          </button>
+                          <button
+                            onClick={() =>
+                              navigate(`/admin/products/${product.id}/images`)
+                            }
+                            className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 text-xs sm:text-sm"
+                          >
+                            Медиа
+                          </button>
+                          <button
+                            onClick={() => printBarcode({ product })}
+                            className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 text-xs sm:text-sm"
+                          >
+                            Штрихкод
+                          </button>
+                          <button
+                            onClick={() => handleDelete(product.id)}
+                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-xs sm:text-sm"
+                          >
+                            Удалить
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pagination */}
+        {products.length > itemsPerPage && (
+          <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+            <div className="flex-1 flex justify-between sm:hidden">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Назад
+              </button>
+              <span className="text-sm text-gray-700 px-4 py-2">
+                Страница {currentPage} из {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Вперед
+              </button>
+            </div>
+            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-gray-700">
+                  Показано <span className="font-medium">{startIndex + 1}</span> -{" "}
+                  <span className="font-medium">{Math.min(endIndex, products.length)}</span> из{" "}
+                  <span className="font-medium">{products.length}</span> товаров
+                </p>
+              </div>
+              <div>
+                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Назад
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                        currentPage === page
+                          ? "z-10 bg-primary border-primary text-white"
+                          : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
-                      {product.active_for_pos ? "Включен" : "Выкл"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {product.costPrice
-                      ? `${Number(product.costPrice).toFixed(2)} UZS`
-                      : "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                    {product.profit !== undefined && product.profit !== null
-                      ? `${Number(product.profit).toFixed(2)} UZS`
-                      : product.costPrice && product.price
-                      ? `${(
-                          Number(product.price) - Number(product.costPrice)
-                        ).toFixed(2)} UZS`
-                      : "-"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => {
-                        setEditingProduct(product);
-                        setShowForm(true);
-                      }}
-                      className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-4"
-                    >
-                      Редактировать
+                      {page}
                     </button>
-                    <button
-                      onClick={() =>
-                        navigate(`/admin/products/${product.id}/images`)
-                      }
-                      className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 mr-4"
-                    >
-                      Медиа
-                    </button>
-                    <button
-                      onClick={() => printBarcode({ product })}
-                      className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4"
-                    >
-                      Печать штрихкода
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                    >
-                      Удалить
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  ))}
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Вперед
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -222,7 +301,6 @@ const ProductForm = ({ product, categories, onClose }) => {
     costPrice: product?.costPrice ?? "",
     categoryId: product?.categoryId || "",
     sku: product?.sku || "",
-    stock: product?.stock ?? "",
     active_for_pos: product?.active_for_pos ?? false,
   });
 
@@ -258,12 +336,6 @@ const ProductForm = ({ product, categories, onClose }) => {
       submitData.offline_price = parseFloat(formData.offline_price);
     } else {
       submitData.offline_price = null;
-    }
-
-    if (formData.stock !== "" && formData.stock !== null) {
-      submitData.stock = parseInt(formData.stock, 10);
-    } else {
-      delete submitData.stock;
     }
 
     if (formData.sku) {
@@ -409,18 +481,6 @@ const ProductForm = ({ product, categories, onClose }) => {
                 }
                 className="w-full px-4 py-2 border rounded"
                 placeholder="Для сканера"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">Остаток</label>
-              <input
-                type="number"
-                value={formData.stock}
-                onChange={(e) =>
-                  setFormData({ ...formData, stock: e.target.value })
-                }
-                className="w-full px-4 py-2 border rounded"
-                placeholder="0"
               />
             </div>
             <div className="flex items-end">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { posService } from "../../services/pos.service";
 import { Analytics } from "@vercel/analytics/react";
@@ -7,7 +7,12 @@ import { Analytics } from "@vercel/analytics/react";
 const POSReceipt = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [printed, setPrinted] = useState(false);
+
+  // Try to get data from location.state first (passed from Main.jsx)
+  const stateOrder = location.state?.order;
+  const stateItems = location.state?.items || [];
 
   const {
     data: receiptData,
@@ -16,10 +21,38 @@ const POSReceipt = () => {
   } = useQuery({
     queryKey: ["receipt", orderId],
     queryFn: () => posService.getReceiptData(orderId),
-    enabled: !!orderId,
+    enabled: !!orderId && !stateOrder, // Only fetch if we don't have state data
   });
 
-  const receipt = receiptData?.data;
+  // Safely extract receipt data
+  let receipt = null;
+  
+  if (stateOrder) {
+    // Use data from location.state
+    const receiptDate = new Date(stateOrder.createdAt);
+    receipt = {
+      receipt_number: stateOrder.receipt_number || stateOrder.orderNumber,
+      date: receiptDate.toLocaleDateString('ru-RU'),
+      time: receiptDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+      cashier: 'Cashier', // Will be filled from API if needed
+      items: Array.isArray(stateItems) ? stateItems.map(item => ({
+        name: item.product_name || 'Unknown Product',
+        quantity: item.quantity || 0,
+        price: item.price || 0,
+        size: item.size,
+        sku: item.sku,
+      })) : [],
+      subtotal: stateOrder.total || 0,
+      tax: 0,
+      total: stateOrder.total || 0,
+      payment_method: stateOrder.payment_method || stateOrder.paymentMethod || 'CASH',
+      payment_status: stateOrder.payment_status || (stateOrder.status === 'PAID' ? 'paid' : 'pending'),
+      terminal_transaction_id: stateOrder.terminal_transaction_id,
+    };
+  } else if (receiptData?.data) {
+    // Use data from API
+    receipt = receiptData.data.data || receiptData.data;
+  }
 
   useEffect(() => {
     // Auto-print on first load
@@ -32,20 +65,20 @@ const POSReceipt = () => {
     }
   }, [receipt, printed]);
 
-  if (isLoading) {
+  if (isLoading && !stateOrder) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-xl font-semibold text-gray-700 mb-2">
             Loading receipt...
           </div>
-          <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
+          <div className="animate-spin inline-block w-8 h-8 border-4 border-primary-light border-t-primary rounded-full"></div>
         </div>
       </div>
     );
   }
 
-  if (error || !receipt) {
+  if ((error || !receipt) && !stateOrder) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -54,7 +87,7 @@ const POSReceipt = () => {
           </div>
           <button
             onClick={() => navigate("/pos")}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
           >
             Back to POS
           </button>
@@ -70,7 +103,7 @@ const POSReceipt = () => {
         <div className="print:hidden flex gap-3 mb-4">
           <button
             onClick={() => window.print()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
           >
             🖨️ Print Receipt
           </button>
@@ -123,7 +156,7 @@ const POSReceipt = () => {
               <span className="text-right">TOTAL</span>
             </div>
 
-            {receipt.items.map((item, idx) => (
+            {(receipt.items && Array.isArray(receipt.items) ? receipt.items : []).map((item, idx) => (
               <div key={idx} className="mb-2">
                 <div className="flex justify-between mb-1">
                   <span className="font-semibold text-xs">{item.name}</span>
@@ -133,6 +166,9 @@ const POSReceipt = () => {
                 </div>
                 <div className="text-xs text-gray-600">
                   {item.quantity} × {item.price.toLocaleString()} UZS
+                  {item.size && (
+                    <span className="ml-2 text-gray-500">Размер: {item.size}</span>
+                  )}
                   {item.sku && (
                     <span className="ml-2 text-gray-500">SKU: {item.sku}</span>
                   )}

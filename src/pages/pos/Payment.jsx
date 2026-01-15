@@ -84,7 +84,7 @@ const POSPayment = () => {
           <div className="text-xl font-semibold text-gray-700 mb-2">
             Loading payment details...
           </div>
-          <div className="animate-spin inline-block w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full"></div>
+          <div className="animate-spin inline-block w-8 h-8 border-4 border-primary-light border-t-primary rounded-full"></div>
         </div>
       </div>
     );
@@ -99,7 +99,7 @@ const POSPayment = () => {
           </div>
           <button
             onClick={handleCancel}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark"
           >
             Back to POS
           </button>
@@ -131,7 +131,7 @@ const POSPayment = () => {
             </div>
             <button
               onClick={() => navigate(`/pos/receipt/${orderId}`)}
-              className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 mb-2"
+              className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark mb-2"
             >
               View & Print Receipt
             </button>
@@ -150,8 +150,8 @@ const POSPayment = () => {
             <div className="mb-6">
               <div className="inline-block">
                 <div className="relative w-20 h-20">
-                  <div className="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
-                  <div className="absolute inset-0 border-4 border-blue-600 rounded-full animate-spin border-t-transparent"></div>
+                  <div className="absolute inset-0 border-4 border-primary-light rounded-full"></div>
+                  <div className="absolute inset-0 border-4 border-primary rounded-full animate-spin border-t-transparent"></div>
                 </div>
               </div>
             </div>
@@ -161,11 +161,11 @@ const POSPayment = () => {
             <p className="text-gray-600 mb-6">
               Please wait while we confirm your terminal payment...
             </p>
-            <div className="bg-blue-50 border border-blue-200 rounded p-4">
+            <div className="bg-gray-50 border border-gray-200 rounded p-4">
               <p className="text-sm text-gray-700 mb-2">
                 Receipt #{order.receipt_number}
               </p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-primary">
                 {order.total.toLocaleString()} UZS
               </p>
             </div>
@@ -258,7 +258,7 @@ const POSPayment = () => {
               <button
                 onClick={handleRetry}
                 disabled={confirmPaymentMutation.isPending}
-                className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+                className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark disabled:opacity-50"
               >
                 🔄 Retry Payment {retryCount > 0 && `(${retryCount})`}
               </button>

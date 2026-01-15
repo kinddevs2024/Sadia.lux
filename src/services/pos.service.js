@@ -95,6 +95,12 @@ export const posService = {
    * Get cashier statistics (Admin/SuperAdmin only)
    */
   getCashierStats: (filters = {}) => api.get("/admin/cashiers/stats", { params: filters }),
+
+  // ===== Inventory =====
+  /**
+   * Get inventory for POS
+   */
+  getInventory: (filters = {}) => api.get("/pos/inventory", { params: filters }),
 };
 
 export default posService;

@@ -19,69 +19,69 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Панель управления</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">Панель управления</h1>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-gray-600 text-sm font-medium mb-2">
             Доход за сегодня
           </h3>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-2xl font-bold text-gray-900">
             {stats.today?.revenue?.toFixed(2) || '0.00'} сум
           </p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-gray-600 text-sm font-medium mb-2">
             Заказов за сегодня
           </h3>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-2xl font-bold text-gray-900">
             {stats.today?.orders || 0}
           </p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-gray-600 text-sm font-medium mb-2">
             Общий доход
           </h3>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-2xl font-bold text-gray-900">
             {stats.allTime?.revenue?.toFixed(2) || '0.00'} сум
           </p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h3 className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-2">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h3 className="text-gray-600 text-sm font-medium mb-2">
             Всего заказов
           </h3>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+          <p className="text-2xl font-bold text-gray-900">
             {stats.allTime?.orders || 0}
           </p>
         </div>
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Недавние заказы</h2>
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Недавние заказы</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <table className="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Номер заказа
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Статус
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Всего
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Дата
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="bg-white divide-y divide-gray-200">
               {recentOrders.map((order) => (
                 <tr key={order.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {order.orderNumber}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -102,10 +102,10 @@ const Dashboard = () => {
                        order.status === 'CANCELLED' ? 'Отменен' : order.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {order.total.toFixed(2)} сум
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </td>
                 </tr>

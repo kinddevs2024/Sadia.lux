@@ -57,7 +57,7 @@ const POSLogin = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
           <div>
@@ -68,13 +68,13 @@ const POSLogin = () => {
               required
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50"
+            className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary-dark disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
