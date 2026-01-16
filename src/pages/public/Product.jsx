@@ -20,12 +20,18 @@ const Product = () => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageIndex, setModalImageIndex] = useState(0);
 
-  const { data: productData, isLoading } = useQuery({
+  const { data: productData, isLoading, error: productError } = useQuery({
     queryKey: ['product', slug],
     queryFn: () => productService.getProductBySlug(slug),
+    retry: 2,
   });
 
   const product = productData?.data;
+
+  // Log error for debugging
+  if (productError) {
+    console.error('Error loading product:', productError);
+  }
   const images = product?.images || [];
   const imagesLength = images.length;
 
@@ -72,6 +78,25 @@ const Product = () => {
     );
   }
 
+  if (productError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Ошибка загрузки товара</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {productError.message || 'Произошла ошибка при загрузке товара'}
+          </p>
+          <button
+            onClick={() => navigate('/shop')}
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors"
+          >
+            Вернуться в магазин
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -88,8 +113,18 @@ const Product = () => {
     );
   }
 
-  const inventory = product.inventory || [];
-  const sizes = inventory.map((inv) => inv.size);
+  // Safely extract inventory
+  const inventory = Array.isArray(product?.inventory) ? product.inventory : [];
+  const sizes = inventory.map((inv) => inv?.size).filter(Boolean);
+  
+  // Debug logging
+  console.log('Product data:', {
+    id: product?.id,
+    name: product?.name,
+    inventoryLength: inventory.length,
+    sizesCount: sizes.length,
+    hasInventory: !!product?.inventory,
+  });
   
   const getImageUrl = (url) => {
     if (!url) return '';
@@ -110,6 +145,20 @@ const Product = () => {
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert('Пожалуйста, выберите размер');
+      return;
+    }
+
+    // Check inventory availability
+    const inventoryItem = inventory.find((inv) => inv.size === selectedSize);
+    
+    if (inventoryItem) {
+      if (inventoryItem.quantity < quantity) {
+        alert(`В наличии только ${inventoryItem.quantity} шт. размера ${selectedSize}. Пожалуйста, выберите меньшее количество.`);
+        setQuantity(inventoryItem.quantity); // Set to max available
+        return;
+      }
+    } else {
+      alert(`Товар размера ${selectedSize} отсутствует на складе.`);
       return;
     }
 
@@ -275,7 +324,16 @@ const Product = () => {
               <SizeSelector
                 sizes={sizes}
                 selectedSize={selectedSize}
-                onSizeChange={setSelectedSize}
+                onSizeChange={(newSize) => {
+                  setSelectedSize(newSize);
+                  // Reset quantity to 1 when size changes
+                  setQuantity(1);
+                  // If new size has limited stock, adjust quantity
+                  const inventoryItem = inventory.find((inv) => inv.size === newSize);
+                  if (inventoryItem && inventoryItem.quantity < quantity) {
+                    setQuantity(Math.min(1, inventoryItem.quantity));
+                  }
+                }}
                 inventory={inventory}
               />
             ) : (
@@ -296,8 +354,18 @@ const Product = () => {
                 </button>
                 <span className="w-12 text-center font-medium text-lg">{quantity}</span>
                 <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center"
+                  onClick={() => {
+                    // Get max available quantity for selected size
+                    const inventoryItem = inventory.find((inv) => inv.size === selectedSize);
+                    const maxQuantity = inventoryItem ? inventoryItem.quantity : 999;
+                    setQuantity((q) => Math.min(maxQuantity, q + 1));
+                  }}
+                  className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={(() => {
+                    const inventoryItem = inventory.find((inv) => inv.size === selectedSize);
+                    const maxQuantity = inventoryItem ? inventoryItem.quantity : 0;
+                    return quantity >= maxQuantity;
+                  })()}
                 >
                   +
                 </button>

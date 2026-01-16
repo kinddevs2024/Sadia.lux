@@ -68,6 +68,29 @@ export const CartProvider = ({ children }) => {
   }, [cart, isInitialized, storageKey]);
 
   const addToCart = (product, size, quantity = 1) => {
+    // Check inventory availability
+    const inventory = Array.isArray(product?.inventory) ? product.inventory : [];
+    const inventoryItem = inventory.find((inv) => inv.size === size);
+    
+    if (inventoryItem) {
+      // Check if requested quantity exceeds available stock
+      const existingItem = cart.find(
+        (item) => item.productId === product.id && item.size === size
+      );
+      const currentQuantity = existingItem ? existingItem.quantity : 0;
+      const requestedQuantity = currentQuantity + quantity;
+      
+      if (requestedQuantity > inventoryItem.quantity) {
+        const available = inventoryItem.quantity - currentQuantity;
+        if (available <= 0) {
+          alert(`Извините, товар размера ${size} закончился на складе.`);
+          return;
+        }
+        alert(`В наличии только ${inventoryItem.quantity} шт. размера ${size}. Вы можете заказать максимум ${available} шт.`);
+        quantity = available; // Limit to available quantity
+      }
+    }
+
     setCart((prevCart) => {
       const existingItem = prevCart.find(
         (item) => item.productId === product.id && item.size === size
@@ -116,6 +139,21 @@ export const CartProvider = ({ children }) => {
     if (quantity <= 0) {
       removeFromCart(productId, size);
       return;
+    }
+
+    // Check inventory availability when updating quantity
+    const cartItem = cart.find(
+      (item) => item.productId === productId && item.size === size
+    );
+    
+    if (cartItem && cartItem.product) {
+      const inventory = Array.isArray(cartItem.product?.inventory) ? cartItem.product.inventory : [];
+      const inventoryItem = inventory.find((inv) => inv.size === size);
+      
+      if (inventoryItem && quantity > inventoryItem.quantity) {
+        alert(`В наличии только ${inventoryItem.quantity} шт. размера ${size}.`);
+        quantity = inventoryItem.quantity; // Limit to available quantity
+      }
     }
 
     setCart((prevCart) =>
