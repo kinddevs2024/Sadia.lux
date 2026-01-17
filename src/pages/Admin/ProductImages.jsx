@@ -57,6 +57,64 @@ const ProductImages = () => {
     },
   });
 
+  const updateImageOrderMutation = useMutation({
+    mutationFn: async (reorderedImages) => {
+      // Update the entire images array with new order values
+      const response = await api.put(`/products/${id}`, {
+        images: reorderedImages,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['product', id]);
+      queryClient.invalidateQueries(['admin-products']);
+    },
+  });
+
+  const handleMoveUp = (imageId) => {
+    const sortedImages = [...images].sort((a, b) => (a.order || 0) - (b.order || 0));
+    const imageIndex = sortedImages.findIndex(img => img.id === imageId);
+    
+    if (imageIndex <= 0) return; // Already first
+    
+    // Swap with previous image
+    const newImages = [...sortedImages];
+    const currentOrder = newImages[imageIndex].order || imageIndex;
+    const prevOrder = newImages[imageIndex - 1].order || (imageIndex - 1);
+    
+    newImages[imageIndex].order = prevOrder;
+    newImages[imageIndex - 1].order = currentOrder;
+    
+    // Update all orders to be sequential
+    newImages.forEach((img, idx) => {
+      img.order = idx;
+    });
+    
+    updateImageOrderMutation.mutate(newImages);
+  };
+
+  const handleMoveDown = (imageId) => {
+    const sortedImages = [...images].sort((a, b) => (a.order || 0) - (b.order || 0));
+    const imageIndex = sortedImages.findIndex(img => img.id === imageId);
+    
+    if (imageIndex < 0 || imageIndex >= sortedImages.length - 1) return; // Already last
+    
+    // Swap with next image
+    const newImages = [...sortedImages];
+    const currentOrder = newImages[imageIndex].order || imageIndex;
+    const nextOrder = newImages[imageIndex + 1].order || (imageIndex + 1);
+    
+    newImages[imageIndex].order = nextOrder;
+    newImages[imageIndex + 1].order = currentOrder;
+    
+    // Update all orders to be sequential
+    newImages.forEach((img, idx) => {
+      img.order = idx;
+    });
+    
+    updateImageOrderMutation.mutate(newImages);
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -92,7 +150,9 @@ const ProductImages = () => {
   const handleAddImage = (e) => {
     e.preventDefault();
     if (uploadMethod === 'url' && imageUrl.trim()) {
-      addImageMutation.mutate(imageUrl.trim());
+      // Convert relative URLs to blob storage URLs before sending to backend
+      const urlToAdd = getImageUrl(imageUrl.trim());
+      addImageMutation.mutate(urlToAdd);
     } else if (uploadMethod === 'file' && selectedFile) {
       addImageMutation.mutate(selectedFile);
     } else {
@@ -211,13 +271,45 @@ const ProductImages = () => {
               )}
             </div>
           ) : (
-            <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="URL изображения или видео (https://...)"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
-            />
+            <div className="space-y-4">
+              <input
+                type="url"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="URL изображения или видео (https://... или /uploads/...)"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+              />
+              {imageUrl && imageUrl.trim() && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Предпросмотр:</p>
+                  {(() => {
+                    const previewUrl = getImageUrl(imageUrl.trim());
+                    const isVideo = previewUrl && /\.(mp4|webm|ogg|mov|m4v)$/i.test(previewUrl);
+                    return isVideo ? (
+                      <video
+                        src={previewUrl}
+                        controls
+                        className="max-w-xs max-h-48 rounded-lg border border-gray-300 dark:border-gray-600"
+                        onError={(e) => {
+                          console.error('Error loading video preview:', previewUrl);
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="max-w-xs max-h-48 rounded-lg border border-gray-300 dark:border-gray-600 object-contain"
+                        onError={(e) => {
+                          console.error('Error loading image preview:', previewUrl);
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
           )}
           <button
             type="submit"
@@ -240,10 +332,12 @@ const ProductImages = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {images
-              .filter((image) => image && image.url) // Filter out images without URLs
-              .sort((a, b) => (a.order || 0) - (b.order || 0))
-              .map((image, index) => {
+            {(() => {
+              const sortedImages = images
+                .filter((image) => image && image.url)
+                .sort((a, b) => (a.order || 0) - (b.order || 0));
+              
+              return sortedImages.map((image, index) => {
                 const mediaUrl = getImageUrl(image.url);
                 const isVideo = image.type === 'video' || 
                   (image.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(image.url));
@@ -279,23 +373,46 @@ const ProductImages = () => {
                         Видео
                       </div>
                     )}
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {/* Order Badge */}
+                    <div className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                      #{index + 1}
+                    </div>
+                    {/* Action Buttons */}
+                    <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                      <button
+                        onClick={() => handleMoveUp(image.id)}
+                        disabled={updateImageOrderMutation.isPending || index === 0}
+                        className="bg-green-600 text-white p-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Переместить вверх"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        onClick={() => handleMoveDown(image.id)}
+                        disabled={updateImageOrderMutation.isPending || index === sortedImages.length - 1}
+                        className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Переместить вниз"
+                      >
+                        ↓
+                      </button>
                       <button
                         onClick={() => handleDeleteImage(image.id)}
                         className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
                         disabled={deleteImageMutation.isPending}
+                        title="Удалить"
                       >
-                        Удалить
+                        ×
                       </button>
                     </div>
                     <div className="p-2 bg-white dark:bg-gray-800">
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {isVideo ? 'Видео' : 'Изображение'} • Порядок: {image.order || index}
+                        {isVideo ? 'Видео' : 'Изображение'}
                       </p>
                     </div>
                   </div>
                 );
-              })}
+              });
+            })()}
           </div>
         )}
       </div>
