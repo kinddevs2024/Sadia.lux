@@ -7,6 +7,7 @@ import SizeSelector from '../../components/public/SizeSelector';
 import ProductCard from '../../components/public/ProductCard';
 import Toast from '../../components/shared/Toast';
 import { Analytics } from '@vercel/analytics/react';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const Product = () => {
   const { slug } = useParams();
@@ -126,14 +127,6 @@ const Product = () => {
     hasInventory: !!product?.inventory,
   });
   
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    // For uploaded files, use backend URL
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    const baseUrl = apiUrl.replace('/api', '');
-    return url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
-  };
   
   const currentMedia = images.length > 0 && images[selectedImageIndex] 
     ? images[selectedImageIndex]

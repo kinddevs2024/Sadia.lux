@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { orderService } from '../../services/order.service';
 import { productService } from '../../services/product.service';
 import { exchangeService } from '../../services/exchange.service';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const getStatusLabel = (status) => {
   const labels = {
@@ -29,13 +30,6 @@ const OrderCard = ({ order, orderItems = [], products = [], onCancelRequest }) =
   const [cancelReason, setCancelReason] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
 
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    const baseUrl = apiUrl.replace('/api', '');
-    return url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
-  };
 
   const orderProducts = orderItems.map(item => {
     const product = products.find(p => p.id === item.productId);

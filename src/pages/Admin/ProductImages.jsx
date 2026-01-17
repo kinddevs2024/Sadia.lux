@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { productService } from '../../services/product.service';
 import { Analytics } from '@vercel/analytics/react';
 import api from '../../services/api';
+import { getImageUrl } from '../../utils/imageUtils';
 
 const ProductImages = () => {
   const { id } = useParams();
@@ -243,23 +244,7 @@ const ProductImages = () => {
               .filter((image) => image && image.url) // Filter out images without URLs
               .sort((a, b) => (a.order || 0) - (b.order || 0))
               .map((image, index) => {
-                const getMediaUrl = () => {
-                  // Handle undefined or null url
-                  if (!image.url) {
-                    return '';
-                  }
-                  if (image.url.startsWith('http')) {
-                    return image.url;
-                  }
-                  // For uploaded files, use backend URL
-                  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-                  const baseUrl = apiUrl.replace('/api', '');
-                  return image.url.startsWith('/') 
-                    ? `${baseUrl}${image.url}`
-                    : `${baseUrl}/${image.url}`;
-                };
-                
-                const mediaUrl = getMediaUrl();
+                const mediaUrl = getImageUrl(image.url);
                 const isVideo = image.type === 'video' || 
                   (image.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(image.url));
 

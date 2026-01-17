@@ -1,12 +1,6 @@
+import { getImageUrl } from '../../utils/imageUtils';
+
 const CompactCartItem = ({ item }) => {
-  const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    // For uploaded files, use backend URL
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-    const baseUrl = apiUrl.replace('/api', '');
-    return url.startsWith('/') ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
-  };
 
   const imageUrl = item.product?.images?.[0]?.url;
   const mainImage = imageUrl ? getImageUrl(imageUrl) : '';

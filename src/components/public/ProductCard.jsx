@@ -1,19 +1,11 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { getImageUrl } from "../../utils/imageUtils";
 
 const ProductCard = ({ product, index = 0 }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
-
-  const getImageUrl = (url) => {
-    if (!url) return "";
-    if (url.startsWith("http")) return url;
-    // For uploaded files, use backend URL
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-    const baseUrl = apiUrl.replace("/api", "");
-    return url.startsWith("/") ? `${baseUrl}${url}` : `${baseUrl}/${url}`;
-  };
 
   const mainImage = product.images?.[0]?.url
     ? getImageUrl(product.images[0].url)
