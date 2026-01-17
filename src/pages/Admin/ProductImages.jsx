@@ -60,14 +60,20 @@ const ProductImages = () => {
   const updateImageOrderMutation = useMutation({
     mutationFn: async (reorderedImages) => {
       // Update the entire images array with new order values
+      console.log('Updating image order:', reorderedImages.length, 'images');
       const response = await api.put(`/products/${id}`, {
         images: reorderedImages,
       });
+      console.log('Image order update response:', response.data);
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['product', id]);
       queryClient.invalidateQueries(['admin-products']);
+    },
+    onError: (error) => {
+      console.error('Error updating image order:', error);
+      alert('Ошибка при обновлении порядка изображений: ' + (error.response?.data?.error || error.message));
     },
   });
 
