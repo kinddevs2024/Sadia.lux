@@ -1,8 +1,10 @@
 /**
  * Utility function to get image URL
- * Returns blob storage URLs as-is - ensures images come from blob storage
- * Handles URLs like: https://[id].public.blob.vercel-storage.com/uploads/...
+ * Converts relative paths to blob storage URLs
+ * Base blob storage URL: https://gpkikexo3fkwpz9o.public.blob.vercel-storage.com
  */
+const BLOB_STORAGE_BASE_URL = 'https://gpkikexo3fkwpz9o.public.blob.vercel-storage.com';
+
 export const getImageUrl = (url) => {
   if (!url) return '';
   
@@ -13,18 +15,14 @@ export const getImageUrl = (url) => {
     return url;
   }
   
-  // If we get a relative path like /uploads/..., the backend should have sent
-  // a full blob storage URL. This is a fallback for development only.
-  // In production, all URLs should be full blob storage URLs.
-  
-  // Log warning in development if we get relative paths
-  if (import.meta.env.DEV) {
-    console.warn('⚠️ Received relative image URL:', url);
-    console.warn('   Backend should send full blob storage URLs (https://...)');
-    console.warn('   Check that BLOB_READ_WRITE_TOKEN is set and products are imported correctly');
+  // If we get a relative path like /uploads/IMG_1654.PNG,
+  // convert it to full blob storage URL
+  if (url.startsWith('/')) {
+    // Remove leading slash and prepend blob storage base URL
+    const cleanPath = url.startsWith('/') ? url.substring(1) : url;
+    return `${BLOB_STORAGE_BASE_URL}/${cleanPath}`;
   }
   
-  // Return relative path as-is - but this shouldn't happen in production
-  // The backend should always send full blob storage URLs
-  return url;
+  // If path doesn't start with /, prepend blob storage base URL with /uploads/
+  return `${BLOB_STORAGE_BASE_URL}/uploads/${url}`;
 };
