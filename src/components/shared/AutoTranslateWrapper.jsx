@@ -1,12 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useTranslation } from '../../context/TranslationContext';
 
-/**
- * Component that automatically translates all text content within it
- * Usage: Wrap any component with <AutoTranslateWrapper>...</AutoTranslateWrapper>
- * 
- * Note: This is a simple implementation. For better performance, use TranslatableText for specific text elements.
- */
 export const AutoTranslateWrapper = ({ children, className, ...props }) => {
   const containerRef = useRef(null);
   const { translate, currentLanguage, isTranslationNeeded } = useTranslation();
@@ -20,7 +14,6 @@ export const AutoTranslateWrapper = ({ children, className, ...props }) => {
         NodeFilter.SHOW_TEXT,
         {
           acceptNode: (node) => {
-            // Skip if parent is script, style, or already translated
             const parent = node.parentElement;
             if (!parent) return NodeFilter.FILTER_REJECT;
             if (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') {
@@ -29,7 +22,6 @@ export const AutoTranslateWrapper = ({ children, className, ...props }) => {
             if (parent.dataset.translated === 'true') {
               return NodeFilter.FILTER_REJECT;
             }
-            // Only translate non-empty text nodes
             return node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
           },
         },
@@ -42,7 +34,6 @@ export const AutoTranslateWrapper = ({ children, className, ...props }) => {
         textNodes.push(textNode);
       }
 
-      // Translate all text nodes
       for (const node of textNodes) {
         const originalText = node.textContent.trim();
         if (originalText && originalText.length > 0) {
@@ -55,7 +46,6 @@ export const AutoTranslateWrapper = ({ children, className, ...props }) => {
               }
             }
           } catch (error) {
-            // Silently skip failed translations
             if (process.env.NODE_ENV === 'development') {
               console.warn('Translation failed in AutoTranslateWrapper:', error.message);
             }

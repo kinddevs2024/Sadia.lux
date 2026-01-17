@@ -26,11 +26,9 @@ const ProductImages = () => {
   const addImageMutation = useMutation({
     mutationFn: async (data) => {
       if (typeof data === 'string') {
-        // URL upload
         const response = await api.post(`/products/${id}/images`, { url: data });
         return response.data;
       } else {
-        // File upload
         const formData = new FormData();
         formData.append('file', data);
         const response = await api.post(`/products/${id}/images`, formData);
@@ -59,7 +57,6 @@ const ProductImages = () => {
 
   const updateImageOrderMutation = useMutation({
     mutationFn: async (reorderedImages) => {
-      // Update the entire images array with new order values
       console.log('Updating image order:', reorderedImages.length, 'images');
       const response = await api.put(`/products/${id}`, {
         images: reorderedImages,
@@ -81,9 +78,8 @@ const ProductImages = () => {
     const sortedImages = [...images].sort((a, b) => (a.order || 0) - (b.order || 0));
     const imageIndex = sortedImages.findIndex(img => img.id === imageId);
     
-    if (imageIndex <= 0) return; // Already first
+    if (imageIndex <= 0) return;
     
-    // Swap with previous image
     const newImages = [...sortedImages];
     const currentOrder = newImages[imageIndex].order || imageIndex;
     const prevOrder = newImages[imageIndex - 1].order || (imageIndex - 1);
@@ -91,7 +87,7 @@ const ProductImages = () => {
     newImages[imageIndex].order = prevOrder;
     newImages[imageIndex - 1].order = currentOrder;
     
-    // Update all orders to be sequential
+    
     newImages.forEach((img, idx) => {
       img.order = idx;
     });
@@ -103,9 +99,9 @@ const ProductImages = () => {
     const sortedImages = [...images].sort((a, b) => (a.order || 0) - (b.order || 0));
     const imageIndex = sortedImages.findIndex(img => img.id === imageId);
     
-    if (imageIndex < 0 || imageIndex >= sortedImages.length - 1) return; // Already last
+    if (imageIndex < 0 || imageIndex >= sortedImages.length - 1) return;
     
-    // Swap with next image
+    
     const newImages = [...sortedImages];
     const currentOrder = newImages[imageIndex].order || imageIndex;
     const nextOrder = newImages[imageIndex + 1].order || (imageIndex + 1);
@@ -113,7 +109,7 @@ const ProductImages = () => {
     newImages[imageIndex].order = nextOrder;
     newImages[imageIndex + 1].order = currentOrder;
     
-    // Update all orders to be sequential
+    
     newImages.forEach((img, idx) => {
       img.order = idx;
     });
@@ -124,7 +120,6 @@ const ProductImages = () => {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type (images and videos)
       const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
       const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
       const allowedTypes = [...allowedImageTypes, ...allowedVideoTypes];
@@ -136,7 +131,7 @@ const ProductImages = () => {
       
       const isVideo = allowedVideoTypes.includes(file.type);
       
-      // Validate file size (50MB for videos, 5MB for images)
+      
       const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
       if (file.size > maxSize) {
         alert(`Размер файла превышает ${isVideo ? '50MB' : '5MB'}`);
@@ -144,7 +139,7 @@ const ProductImages = () => {
       }
 
       setSelectedFile(file);
-      // Create preview
+      
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result);
@@ -156,7 +151,7 @@ const ProductImages = () => {
   const handleAddImage = (e) => {
     e.preventDefault();
     if (uploadMethod === 'url' && imageUrl.trim()) {
-      // Convert relative URLs to blob storage URLs before sending to backend
+      
       const urlToAdd = getImageUrl(imageUrl.trim());
       addImageMutation.mutate(urlToAdd);
     } else if (uploadMethod === 'file' && selectedFile) {
@@ -196,13 +191,11 @@ const ProductImages = () => {
         </div>
       </div>
 
-      {/* Add Image Form */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
           Добавить изображение или видео
         </h2>
         
-        {/* Upload Method Toggle */}
         <div className="flex gap-4 mb-4">
           <button
             type="button"
@@ -327,7 +320,6 @@ const ProductImages = () => {
         </form>
       </div>
 
-      {/* Images Grid */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
           Медиа файлы продукта ({images.length})
@@ -379,11 +371,9 @@ const ProductImages = () => {
                         Видео
                       </div>
                     )}
-                    {/* Order Badge */}
                     <div className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
                       #{index + 1}
                     </div>
-                    {/* Action Buttons */}
                     <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
                       <button
                         onClick={() => handleMoveUp(image.id)}

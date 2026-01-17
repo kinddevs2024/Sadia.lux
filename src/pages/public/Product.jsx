@@ -29,14 +29,12 @@ const Product = () => {
 
   const product = productData?.data;
 
-  // Log error for debugging
   if (productError) {
     console.error('Error loading product:', productError);
   }
   const images = product?.images || [];
   const imagesLength = images.length;
 
-  // Get related products from the same category
   const { data: relatedProductsData } = useQuery({
     queryKey: ['products', 'category', product?.categoryId, 'exclude', product?.id],
     queryFn: () => productService.getProducts({ 
@@ -46,12 +44,10 @@ const Product = () => {
     enabled: !!product?.categoryId,
   });
 
-  // Filter out current product from related products
   const relatedProducts = relatedProductsData?.data?.data?.filter(
     (p) => p.id !== product?.id
   ) || [];
 
-  // Keyboard navigation for image modal - MUST be called before any early returns
   useEffect(() => {
     if (!showImageModal || imagesLength === 0) return;
 
@@ -114,11 +110,9 @@ const Product = () => {
     );
   }
 
-  // Safely extract inventory
   const inventory = Array.isArray(product?.inventory) ? product.inventory : [];
   const sizes = inventory.map((inv) => inv?.size).filter(Boolean);
   
-  // Debug logging
   console.log('Product data:', {
     id: product?.id,
     name: product?.name,
@@ -138,16 +132,15 @@ const Product = () => {
   const handleAddToCart = () => {
     if (!selectedSize) {
       alert('Пожалуйста, выберите размер');
-      return;
-    }
+    return;
+  }
 
-    // Check inventory availability
     const inventoryItem = inventory.find((inv) => inv.size === selectedSize);
     
     if (inventoryItem) {
       if (inventoryItem.quantity < quantity) {
         alert(`В наличии только ${inventoryItem.quantity} шт. размера ${selectedSize}. Пожалуйста, выберите меньшее количество.`);
-        setQuantity(inventoryItem.quantity); // Set to max available
+        setQuantity(inventoryItem.quantity);
         return;
       }
     } else {
@@ -292,7 +285,6 @@ const Product = () => {
             )}
           </div>
 
-          {/* Product Info */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               {product.name}
@@ -319,9 +311,7 @@ const Product = () => {
                 selectedSize={selectedSize}
                 onSizeChange={(newSize) => {
                   setSelectedSize(newSize);
-                  // Reset quantity to 1 when size changes
                   setQuantity(1);
-                  // If new size has limited stock, adjust quantity
                   const inventoryItem = inventory.find((inv) => inv.size === newSize);
                   if (inventoryItem && inventoryItem.quantity < quantity) {
                     setQuantity(Math.min(1, inventoryItem.quantity));
@@ -348,7 +338,6 @@ const Product = () => {
                 <span className="w-12 text-center font-medium text-lg">{quantity}</span>
                 <button
                   onClick={() => {
-                    // Get max available quantity for selected size
                     const inventoryItem = inventory.find((inv) => inv.size === selectedSize);
                     const maxQuantity = inventoryItem ? inventoryItem.quantity : 999;
                     setQuantity((q) => Math.min(maxQuantity, q + 1));
