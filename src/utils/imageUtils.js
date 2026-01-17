@@ -1,4 +1,4 @@
-const BLOB_STORAGE_BASE_URL = 'https://gpkikexo3fkwpz9o.public.blob.vercel-storage.com';
+const BLOB_STORAGE_BASE_URL = 'https://uqp6kpcfed9nx1c9.public.blob.vercel-storage.com';
 
 export const getImageUrl = (url) => {
   if (!url) return '';
