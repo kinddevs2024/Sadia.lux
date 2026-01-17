@@ -7,12 +7,74 @@ const ProductCard = ({ product, index = 0 }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
-  const mainImage = product.images?.[0]?.url
-    ? getImageUrl(product.images[0].url)
-    : "";
-  const secondImage = product.images?.[1]?.url
-    ? getImageUrl(product.images[1].url)
-    : null;
+  // Find first image (skip videos)
+  const getFirstImage = () => {
+    if (!product.images || product.images.length === 0) return null;
+    
+    const firstItem = product.images[0];
+    const isFirstVideo = firstItem?.type === 'video' || 
+      (firstItem?.url && /\.(mp4|webm|ogg|mov|m4v)$/i.test(firstItem.url));
+    
+    // If first item is video, try to get second image
+    if (isFirstVideo && product.images.length > 1) {
+      const secondItem = product.images[1];
+      const isSecondImage = secondItem?.type !== 'video' && 
+        secondItem?.url && !/\.(mp4|webm|ogg|mov|m4v)$/i.test(secondItem.url);
+      
+      if (isSecondImage && secondItem?.url) {
+        return getImageUrl(secondItem.url);
+      }
+      
+      // If second is also video, find first image in array
+      for (let i = 1; i < product.images.length; i++) {
+        const item = product.images[i];
+        if (item?.url && item?.type !== 'video' && !/\.(mp4|webm|ogg|mov|m4v)$/i.test(item.url)) {
+          return getImageUrl(item.url);
+        }
+      }
+    }
+    
+    // If first is image, use it
+    if (firstItem?.url && !isFirstVideo) {
+      return getImageUrl(firstItem.url);
+    }
+    
+    // Fallback: return first item even if video
+    return firstItem?.url ? getImageUrl(firstItem.url) : null;
+  };
+
+  const mainImage = getFirstImage() || "";
+  
+  // Get second image for hover effect (skip the main image)
+  const getSecondImage = () => {
+    const mainImageIndex = mainImage ? 
+      product.images?.findIndex(img => 
+        img?.url && getImageUrl(img.url) === mainImage
+      ) : -1;
+    
+    if (mainImageIndex >= 0 && product.images && product.images.length > mainImageIndex + 1) {
+      const nextItem = product.images[mainImageIndex + 1];
+      if (nextItem?.url && nextItem?.type !== 'video' && !/\.(mp4|webm|ogg|mov|m4v)$/i.test(nextItem.url)) {
+        return getImageUrl(nextItem.url);
+      }
+    }
+    
+    // Try to find any other image
+    if (product.images) {
+      for (let i = 0; i < product.images.length; i++) {
+        const item = product.images[i];
+        const itemUrl = item?.url ? getImageUrl(item.url) : null;
+        if (itemUrl && itemUrl !== mainImage && item?.type !== 'video' && 
+            !/\.(mp4|webm|ogg|mov|m4v)$/i.test(item.url)) {
+          return itemUrl;
+        }
+      }
+    }
+    
+    return null;
+  };
+
+  const secondImage = getSecondImage();
   const price = product.price?.toFixed(0) || "0";
   const formattedPrice = new Intl.NumberFormat("ru-RU").format(price);
 
